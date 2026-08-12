@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shield - Checagem de Segurança de Links</title>
+    <meta name="description" content="Verificador de links e proteção contra golpes de phishing e malware.">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header Nord Style -->
+    <header class="site-header" role="banner">
+        <div class="container header-inner">
+            <a href="#" class="brand-logo">
+                <span class="brand-icon" aria-hidden="true">🛡️</span>
+                <span>URL Shield</span>
+                <span class="tcc-badge">TCC</span>
+            </a>
+            <div class="access-toolbar">
+                <button id="contrast-toggle" class="btn-access" title="Alternar Alto Contraste">
+                    👁️ Alto Contraste
+                </button>
+                <button id="font-increase" class="btn-access" title="Aumentar Texto">
+                    A+
+                </button>
+                <button id="font-reset" class="btn-access" title="Texto Normal">
+                    A
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner NordVPN Style -->
+    <section class="hero-banner">
+        <div class="container">
+            <h1 class="hero-title">Verificador de Links — Este link é seguro?</h1>
+            <p class="hero-subtitle">
+                Analise endereços de sites recebidos por e-mail, WhatsApp ou SMS antes de clicar para evitar golpes, phishing e malware.
+            </p>
+
+            <!-- Search Form Box -->
+            <div class="checker-box">
+                <div class="input-container">
+                    <input 
+                        type="url" 
+                        id="url-input" 
+                        class="url-input-field" 
+                        placeholder="Cole ou fale um link aqui (ex: https://bancodobras1l-login.com)" 
+                        autocomplete="off" 
+                        spellcheck="false"
+                        required
+                    >
+                    <button id="voice-btn" type="button" class="btn-paste" title="Falar link por voz">
+                        🎙️ <span id="voice-btn-text">Falar Link</span>
+                    </button>
+                    <button id="paste-btn" type="button" class="btn-paste" title="Colar link">
+                        📋 Colar
+                    </button>
+                    <button id="scan-btn" type="button" class="btn-submit-nord">
+                        Verificar link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+        <div class="container">
+
+            <!-- Loading State -->
+            <section id="loading-state" class="loading-box hidden" aria-live="polite">
+                <div class="nord-spinner" aria-hidden="true"></div>
+                <p>Verificando reputação do domínio, certificados de rede e análise matemática...</p>
+            </section>
+
+            <!-- Result Card Nord Style -->
+            <section id="result-section" class="result-card-nord hidden" aria-live="polite">
+                <div class="result-card-header">
+                    <div class="status-indicator">
+                        <div id="status-badge" class="status-badge-nord">
+                            <span id="status-icon"></span>
+                            <span id="status-text"></span>
+                        </div>
+                    </div>
+                    <div class="risk-meta">
+                        <span class="risk-meta-label">Índice de Risco</span>
+                        <span id="risk-score" class="risk-meta-value">0%</span>
+                    </div>
+                </div>
+
+                <div class="result-card-body">
+                    <!-- Resumo & Áudio -->
+                    <div class="explanation-panel">
+                        <div class="explanation-top">
+                            <h3 class="explanation-title">Diagnóstico de Segurança</h3>
+                            <div class="action-buttons-group">
+                                <button id="speak-btn" class="btn-tts">
+                                    🔊 <span id="speak-btn-text">Ouvir explicação</span>
+                                </button>
+                                <button id="family-help-btn" class="btn-family-whatsapp" title="Pedir ajuda para a família pelo WhatsApp">
+                                    💬 Pedir Ajuda da Família
+                                </button>
+                            </div>
+                        </div>
+                        <p id="accessible-summary" class="explanation-text"></p>
+                        <div class="recommendation-banner">
+                            <strong>💡 Orientação: </strong>
+                            <span id="accessible-recommendation"></span>
+                        </div>
+                    </div>
+
+
+                    <!-- Alertas Encontrados -->
+                    <div id="reasons-wrapper" class="alerts-block hidden">
+                        <h4 class="alerts-title">Pontos de Atenção Detectados:</h4>
+                        <ul id="reasons-list" class="alerts-list"></ul>
+                    </div>
+
+                    <!-- TCC Academic Metrics Grid -->
+                    <details class="tcc-accordion">
+                        <summary class="tcc-summary-btn">
+                            🔬 Detalhes da Análise Algorítmica e Redes (Métricas do TCC)
+                        </summary>
+                        <div class="tcc-grid">
+                            <div class="tcc-metric-box">
+                                <h6>Distância de Levenshtein (Typosquatting)</h6>
+                                <p id="metric-levenshtein">-</p>
+                            </div>
+                            <div class="tcc-metric-box">
+                                <h6>Entropia de Shannon H(X)</h6>
+                                <p id="metric-entropy">-</p>
+                            </div>
+                            <div class="tcc-metric-box">
+                                <h6>Detecção Homográfica (Unicode)</h6>
+                                <p id="metric-homograph">-</p>
+                            </div>
+                            <div class="tcc-metric-box">
+                                <h6>Idade do Domínio (WHOIS)</h6>
+                                <p id="metric-whois">-</p>
+                            </div>
+                            <div class="tcc-metric-box">
+                                <h6>Inspeção Ativa em Sandbox</h6>
+                                <p id="metric-sandbox">-</p>
+                            </div>
+                            <div class="tcc-metric-box">
+                                <h6>Certificado SSL/TLS</h6>
+                                <p id="metric-ssl">-</p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </section>
+
+            <!-- Telegram Bot Simulator -->
+            <section class="nord-telegram-card">
+                <div class="telegram-head">
+                    <span class="telegram-head-icon">💬</span>
+                    <div>
+                        <h3>Integração com Telegram Bot</h3>
+                        <p>O URL Shield pode ser utilizado diretamente no Telegram. Teste a resposta do robô no simulador abaixo:</p>
+                    </div>
+                </div>
+
+                <div class="chat-box-nord">
+                    <div class="chat-top">
+                        <span>🛡️</span>
+                        <div>
+                            <strong>URL Shield Bot</strong> — <span style="color:#00d18e;">Online</span>
+                        </div>
+                    </div>
+                    <div id="chat-messages" class="chat-messages-area">
+                        <div class="msg-bubble bot-bubble">
+                            👋 Olá! Sou o <strong>URL Shield Bot</strong>. Envie um link aqui para verificar se ele é seguro antes de abrir.
+                        </div>
+                    </div>
+                    <div class="chat-controls">
+                        <input type="text" id="chat-input" placeholder="Cole um link aqui..." autocomplete="off">
+                        <button id="chat-send-btn" type="button">Enviar ✈️</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer Nord Style -->
+    <footer class="site-footer">
+        <div class="container text-center">
+            <p><strong>URL Shield</strong> • Projeto de TCC — Verificação Matemática e Heurística de URLs</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

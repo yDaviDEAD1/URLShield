@@ -1,0 +1,611 @@
+/* NordVPN Inspired Clean Cybersecurity Design System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --nord-navy-dark: #0b132a;
+    --nord-navy-mid: #16223e;
+    --nord-navy-light: #202e4e;
+    --nord-teal: #00d18e;
+    --nord-teal-hover: #00b379;
+    
+    --bg-page: #f4f6f9;
+    --bg-card: #ffffff;
+    --text-main: #121829;
+    --text-muted: #596579;
+    --text-light: #94a3b8;
+    --border-subtle: #e2e8f0;
+    
+    /* Status Colors */
+    --color-safe: #059669;
+    --bg-safe-light: #ecfdf5;
+    --border-safe: #a7f3d0;
+    
+    --color-warning: #d97706;
+    --bg-warning-light: #fffbeb;
+    --border-warning: #fde68a;
+    
+    --color-danger: #dc2626;
+    --bg-danger-light: #fef2f2;
+    --border-danger: #fecaca;
+
+    --font-scale: 1;
+    --base-size: calc(16px * var(--font-scale));
+}
+
+/* Modo Alto Contraste para Idosos / Acessibilidade */
+body.high-contrast {
+    --bg-page: #000000;
+    --bg-card: #121212;
+    --text-main: #ffffff;
+    --text-muted: #cbd5e1;
+    --border-subtle: #ffffff;
+    --nord-navy-dark: #000000;
+    --nord-navy-mid: #121212;
+    --nord-teal: #ffff00;
+    --nord-teal-hover: #e6e600;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: var(--base-size);
+    background-color: var(--bg-page);
+    color: var(--text-main);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    width: 100%;
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Header Estilo Nord Security */
+.site-header {
+    background-color: var(--nord-navy-dark);
+    color: #ffffff;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: calc(1.25rem * var(--font-scale));
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+    letter-spacing: -0.02em;
+}
+
+.brand-icon {
+    font-size: 1.4rem;
+}
+
+.tcc-badge {
+    background-color: var(--nord-teal);
+    color: var(--nord-navy-dark);
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.access-toolbar {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-access {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    font-size: calc(0.85rem * var(--font-scale));
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-access:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #ffffff;
+}
+
+body.high-contrast .btn-access {
+    color: #ffffff;
+}
+
+/* Hero Banner Limpo (Nord Style) */
+.hero-banner {
+    background: linear-gradient(180deg, var(--nord-navy-dark) 0%, var(--nord-navy-mid) 100%);
+    color: #ffffff;
+    padding: 3.5rem 0 4rem;
+    text-align: center;
+}
+
+.hero-title {
+    font-size: calc(2.4rem * var(--font-scale));
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+}
+
+.hero-subtitle {
+    font-size: calc(1.15rem * var(--font-scale));
+    color: #94a3b8;
+    max-width: 640px;
+    margin: 0 auto 2.5rem;
+    font-weight: 400;
+}
+
+/* Input Box no estilo NordVPN Link Checker */
+.checker-box {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 0.5rem;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+    max-width: 800px;
+    margin: 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+body.high-contrast .checker-box {
+    border: 2px solid #ffffff;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.url-input-field {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 1.1rem 1.2rem;
+    font-size: calc(1.1rem * var(--font-scale));
+    color: var(--text-main);
+    font-family: inherit;
+    outline: none;
+}
+
+.url-input-field::placeholder {
+    color: #94a3b8;
+}
+
+.btn-paste {
+    background-color: var(--bg-page);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    font-size: calc(0.9rem * var(--font-scale));
+    font-weight: 600;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.btn-paste:hover {
+    background-color: #e2e8f0;
+    color: var(--text-main);
+}
+
+.btn-submit-nord {
+    background-color: var(--nord-teal);
+    color: var(--nord-navy-dark);
+    border: none;
+    font-size: calc(1.1rem * var(--font-scale));
+    font-weight: 700;
+    padding: 1.1rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+    white-space: nowrap;
+}
+
+.btn-submit-nord:hover {
+    background-color: var(--nord-teal-hover);
+}
+
+/* Área de Conteúdo Principal */
+.main-wrapper {
+    flex: 1;
+    padding: 3rem 0;
+}
+
+/* Loading Card */
+.loading-box {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.nord-spinner {
+    width: 44px;
+    height: 44px;
+    border: 4px solid var(--border-subtle);
+    border-top-color: var(--nord-teal);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1.2rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Relatório de Resultado Estilo NordVPN */
+.result-card-nord {
+    background-color: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    margin-bottom: 2.5rem;
+}
+
+.result-card-header {
+    padding: 2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.status-badge-nord {
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    font-size: calc(1.2rem * var(--font-scale));
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.status-badge-nord.safe {
+    background-color: var(--bg-safe-light);
+    color: var(--color-safe);
+    border: 1px solid var(--border-safe);
+}
+
+.status-badge-nord.warning {
+    background-color: var(--bg-warning-light);
+    color: var(--color-warning);
+    border: 1px solid var(--border-warning);
+}
+
+.status-badge-nord.danger {
+    background-color: var(--bg-danger-light);
+    color: var(--color-danger);
+    border: 1px solid var(--border-danger);
+}
+
+.risk-meta {
+    text-align: right;
+}
+
+.risk-meta-label {
+    display: block;
+    font-size: calc(0.85rem * var(--font-scale));
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.risk-meta-value {
+    font-size: calc(1.6rem * var(--font-scale));
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* Corpo do Resultado */
+.result-card-body {
+    padding: 2.5rem;
+}
+
+.explanation-panel {
+    background-color: var(--bg-page);
+    border-radius: 12px;
+    padding: 1.75rem;
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 2rem;
+}
+
+.explanation-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.action-buttons-group {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.btn-family-whatsapp {
+    background-color: #25d366;
+    color: #ffffff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: calc(0.9rem * var(--font-scale));
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.15s ease;
+}
+
+.btn-family-whatsapp:hover {
+    background-color: #1eb956;
+}
+
+
+.btn-tts {
+    background-color: var(--nord-navy-dark);
+    color: #ffffff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-size: calc(0.9rem * var(--font-scale));
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+body.high-contrast .btn-tts {
+    background-color: #ffff00;
+    color: #000000;
+}
+
+.explanation-text {
+    font-size: calc(1.15rem * var(--font-scale));
+    font-weight: 500;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+}
+
+.recommendation-banner {
+    background-color: var(--bg-card);
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--nord-navy-dark);
+    font-size: calc(1.05rem * var(--font-scale));
+    color: var(--text-muted);
+}
+
+.alerts-block {
+    margin-bottom: 2rem;
+}
+
+.alerts-title {
+    font-size: calc(1.1rem * var(--font-scale));
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.alerts-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.alerts-list li {
+    background-color: var(--bg-page);
+    padding: 0.85rem 1.2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    font-size: calc(1rem * var(--font-scale));
+    color: var(--text-main);
+}
+
+/* Detalhamento TCC */
+.tcc-accordion {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 1.5rem;
+}
+
+.tcc-summary-btn {
+    font-size: calc(1.05rem * var(--font-scale));
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    outline: none;
+    padding: 0.5rem 0;
+}
+
+.tcc-summary-btn:hover {
+    color: var(--text-main);
+}
+
+.tcc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1.2rem;
+}
+
+.tcc-metric-box {
+    background-color: var(--bg-page);
+    border: 1px solid var(--border-subtle);
+    padding: 1.2rem;
+    border-radius: 8px;
+}
+
+.tcc-metric-box h6 {
+    font-size: calc(0.85rem * var(--font-scale));
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 0.4rem;
+}
+
+.tcc-metric-box p {
+    font-size: calc(0.95rem * var(--font-scale));
+    color: var(--text-main);
+    word-break: break-word;
+}
+
+/* Telegram Simulator Estilo Nord */
+.nord-telegram-card {
+    background-color: var(--bg-card);
+    border-radius: 16px;
+    border: 1px solid var(--border-subtle);
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+}
+
+.telegram-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.telegram-head-icon {
+    font-size: 2rem;
+}
+
+.chat-box-nord {
+    background-color: var(--nord-navy-dark);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.chat-top {
+    background-color: var(--nord-navy-mid);
+    padding: 0.8rem 1.2rem;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-messages-area {
+    padding: 1.25rem;
+    max-height: 280px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.msg-bubble {
+    max-width: 80%;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: calc(0.95rem * var(--font-scale));
+    line-height: 1.45;
+}
+
+.bot-bubble {
+    background-color: #1e293b;
+    color: #f1f5f9;
+    align-self: flex-start;
+    border-bottom-left-radius: 2px;
+}
+
+.user-bubble {
+    background-color: var(--nord-teal);
+    color: var(--nord-navy-dark);
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
+    font-weight: 600;
+}
+
+.chat-controls {
+    display: flex;
+    padding: 0.75rem;
+    background-color: var(--nord-navy-mid);
+    gap: 0.5rem;
+}
+
+.chat-controls input {
+    flex: 1;
+    background-color: var(--nord-navy-dark);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.7rem 1rem;
+    border-radius: 6px;
+    outline: none;
+    font-size: calc(0.95rem * var(--font-scale));
+}
+
+.chat-controls button {
+    background-color: var(--nord-teal);
+    color: var(--nord-navy-dark);
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Utility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.site-footer {
+    background-color: var(--nord-navy-dark);
+    color: var(--text-light);
+    padding: 2rem 0;
+    margin-top: auto;
+    font-size: calc(0.9rem * var(--font-scale));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
