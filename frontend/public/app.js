@@ -101,6 +101,56 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const pdfReportBtn = document.getElementById('pdf-report-btn');
+
+    // Gerar Laudo Técnico em PDF
+    if (pdfReportBtn) {
+        pdfReportBtn.addEventListener('click', () => {
+            if (!currentUrlAnalyzed) return;
+            populateLaudoTemplate();
+            window.print();
+        });
+    }
+
+    function populateLaudoTemplate() {
+        if (!lastAnalysisData) return;
+        const data = lastAnalysisData;
+        const h = data.heuristics;
+        const exp = data.accessible_explanation;
+        const tech = data.technical_details;
+
+        const randomProtocol = 'URLSHIELD-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000);
+        document.getElementById('laudo-protocol-num').textContent = randomProtocol;
+        document.getElementById('laudo-timestamp').textContent = new Date().toLocaleString('pt-BR');
+
+        document.getElementById('laudo-url').textContent = data.url_analyzed;
+        document.getElementById('laudo-domain').textContent = data.domain;
+        document.getElementById('laudo-risk-level').textContent = h.risk_level;
+        document.getElementById('laudo-risk-score').textContent = h.risk_score + '%';
+
+        document.getElementById('laudo-summary-text').textContent = exp.summary;
+        document.getElementById('laudo-recommendation-text').textContent = "Orientação: " + exp.recommendation;
+
+        const typosquat = (tech.lexical_math || {}).typosquat_info || {};
+        document.getElementById('laudo-metric-levenshtein').textContent = typosquat.is_typosquat 
+            ? `ALERTA: Imitação de '${typosquat.best_matched_domain}' (Similaridade ${typosquat.similarity_percentage}%)`
+            : `OK (Similaridade máx: ${typosquat.similarity_percentage || 0}%)`;
+
+        document.getElementById('laudo-metric-entropy').textContent = `H(X) = ${tech.lexical_math?.domain_entropy || 0}`;
+        document.getElementById('laudo-metric-homograph').textContent = tech.lexical_math?.is_homograph ? `ALERTA: ${tech.lexical_math.homograph_reason}` : "Normal (ASCII)";
+        
+        const age = tech.network?.domain_age_days;
+        document.getElementById('laudo-metric-whois').textContent = age !== null ? `${age} dias` : "Não informado";
+        
+        const ssl = tech.network?.ssl || {};
+        document.getElementById('laudo-metric-ssl').textContent = ssl.has_ssl ? `Válido (${ssl.issuer})` : "SEM SSL / Inseguro";
+
+        const crawl = tech.sandbox_crawl || {};
+        document.getElementById('laudo-metric-sandbox').textContent = crawl.is_accessible 
+            ? `Status ${crawl.status_code} | Título: ${crawl.page_title || 'N/A'}`
+            : (crawl.details || "Inacessível");
+    }
+
     // Pedir Ajuda da Família pelo WhatsApp
     if (familyHelpBtn) {
         familyHelpBtn.addEventListener('click', () => {
@@ -122,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Por favor, permita o acesso à área de transferência para usar este botão, ou cole manualmente (Ctrl+V).');
         }
     });
+
 
 
     // Disparar com Enter no input
@@ -196,13 +247,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    let lastAnalysisData = null;
+
     function renderResults(data) {
+        lastAnalysisData = data;
         const h = data.heuristics;
         const exp = data.accessible_explanation;
         const tech = data.technical_details;
 
         currentUrlAnalyzed = data.url_analyzed || "";
         currentRiskScore = h.risk_score || 0;
+
 
         // Configura Badge de Risco
         statusBadge.className = 'status-badge-nord ' + (h.risk_level === 'SEGURO' ? 'safe' : (h.risk_level === 'SUSPEITO' ? 'warning' : 'danger'));

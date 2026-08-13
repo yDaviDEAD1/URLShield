@@ -106,6 +106,9 @@
                                 <button id="family-help-btn" class="btn-family-whatsapp" title="Pedir ajuda para a família pelo WhatsApp">
                                     💬 Pedir Ajuda da Família
                                 </button>
+                                <button id="pdf-report-btn" class="btn-pdf-report" title="Gerar e Baixar Laudo Técnico em PDF">
+                                    📄 Gerar Laudo Técnico (PDF)
+                                </button>
                             </div>
                         </div>
                         <p id="accessible-summary" class="explanation-text"></p>
@@ -114,6 +117,85 @@
                             <span id="accessible-recommendation"></span>
                         </div>
                     </div>
+
+                    <!-- Modelo Oculto de Impressão do Laudo Técnico (Print Template) -->
+                    <div id="print-laudo-template" class="print-only-container">
+                        <div class="laudo-header">
+                            <h2>🛡️ LAUDO TÉCNICO DE AUDITORIA DE SEGURANÇA DIGITAL</h2>
+                            <p class="laudo-sub">Sistema URL Shield — Verificação Matemática e Heurística de Fraudes</p>
+                            <div class="laudo-protocol">
+                                <span>PROTOCOL: <strong id="laudo-protocol-num">URLSHIELD-2026-0000</strong></span> | 
+                                <span>DATA/HORA: <strong id="laudo-timestamp">-</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="laudo-section">
+                            <h3>1. Identificação do Endereço Analisado</h3>
+                            <table class="laudo-table">
+                                <tr><th>URL Completa:</th><td id="laudo-url">-</td></tr>
+                                <tr><th>Domínio Principal:</th><td id="laudo-domain">-</td></tr>
+                                <tr><th>Classificação de Risco:</th><td id="laudo-risk-level"><strong>-</strong></td></tr>
+                                <tr><th>Pontuação de Risco:</th><td id="laudo-risk-score">-</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="laudo-section">
+                            <h3>2. Síntese do Diagnóstico e Orientação</h3>
+                            <p id="laudo-summary-text" class="laudo-text-box"></p>
+                            <p id="laudo-recommendation-text" class="laudo-text-box highlight"></p>
+                        </div>
+
+                        <div class="laudo-section">
+                            <h3>3. Detalhamento dos Indicadores Matemáticos & Redes</h3>
+                            <table class="laudo-table metrics-table">
+                                <thead>
+                                    <tr>
+                                        <th>Métrica / Teste</th>
+                                        <th>Resultado Obtido</th>
+                                        <th>Impacto na Análise</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Typosquatting (Levenshtein)</strong></td>
+                                        <td id="laudo-metric-levenshtein">-</td>
+                                        <td>Identificação de imitação de marca cadastrada.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Entropia de Shannon H(X)</strong></td>
+                                        <td id="laudo-metric-entropy">-</td>
+                                        <td>Mede aleatoriedade de caracteres no domínio.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Detecção Homográfica (Unicode)</strong></td>
+                                        <td id="laudo-metric-homograph">-</td>
+                                        <td>Busca por caracteres cirílicos/ocultos disfarçados.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Idade do Domínio (WHOIS)</strong></td>
+                                        <td id="laudo-metric-whois">-</td>
+                                        <td>Domínios recém-criados apresentam alto risco.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Certificado SSL/TLS</strong></td>
+                                        <td id="laudo-metric-ssl">-</td>
+                                        <td>Validação de criptografia HTTPS de transporte.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Inspeção Ativa HTML (Sandbox)</strong></td>
+                                        <td id="laudo-metric-sandbox">-</td>
+                                        <td>Detecção de captura de senhas e palavras suspeitas.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="laudo-footer">
+                            <p>Este documento foi gerado automaticamente pelo algoritmo de auditoria matemática do sistema <strong>URL Shield (Projeto de TCC)</strong>.</p>
+                            <p>Carimbo de Autenticidade Digital: <code>URLSHIELD-VERIFIED-SECURE-HASH-2026</code></p>
+                        </div>
+                    </div>
+
 
 
                     <!-- Alertas Encontrados -->
