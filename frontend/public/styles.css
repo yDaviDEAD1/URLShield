@@ -394,112 +394,179 @@ body.high-contrast .checker-box {
     background-color: var(--nord-navy-dark);
 }
 
-.print-only-container {
+/* Container de Renderização Exclusivo do PDF (A4 Page Dimensions: 794px width) */
+.pdf-laudo-paper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 794px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-family: 'Inter', sans-serif;
+    padding: 30px 40px;
+    box-sizing: border-box;
     display: none;
+    z-index: 999999;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
 }
 
-/* Regras de Impressão de Laudo Técnico (PDF) */
-@media print {
-    body * {
-        visibility: hidden;
-    }
-    
-    #print-laudo-template, #print-laudo-template * {
-        visibility: visible;
-    }
-    
-    #print-laudo-template {
-        display: block !important;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        padding: 2rem;
-        color: #000000;
-        background-color: #ffffff;
-        font-family: 'Inter', sans-serif;
-    }
-    
-    .laudo-header {
-        border-bottom: 3px solid #0b132a;
-        padding-bottom: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .laudo-header h2 {
-        font-size: 1.5rem;
-        color: #0b132a;
-        margin-bottom: 0.3rem;
-    }
-    
-    .laudo-sub {
-        font-size: 0.95rem;
-        color: #475569;
-    }
-    
-    .laudo-protocol {
-        margin-top: 0.5rem;
-        font-size: 0.85rem;
-        color: #64748b;
-    }
-    
-    .laudo-section {
-        margin-bottom: 1.5rem;
-    }
-    
-    .laudo-section h3 {
-        font-size: 1.1rem;
-        color: #0b132a;
-        border-bottom: 1px solid #cbd5e1;
-        padding-bottom: 0.3rem;
-        margin-bottom: 0.8rem;
-    }
-    
-    .laudo-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
-    }
-    
-    .laudo-table th, .laudo-table td {
-        border: 1px solid #cbd5e1;
-        padding: 0.6rem 0.8rem;
-        text-align: left;
-    }
-    
-    .laudo-table th {
-        background-color: #f1f5f9;
-        font-weight: 700;
-        width: 30%;
-    }
-    
-    .laudo-text-box {
-        background-color: #f8fafc;
-        border: 1px solid #cbd5e1;
-        padding: 0.8rem;
-        border-radius: 6px;
-        font-size: 0.95rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .laudo-text-box.highlight {
-        border-left: 4px solid #0b132a;
-    }
-    
-    .metrics-table th {
-        width: auto;
-    }
-    
-    .laudo-footer {
-        margin-top: 2rem;
-        border-top: 2px solid #0b132a;
-        padding-top: 1rem;
-        font-size: 0.8rem;
-        color: #64748b;
-        text-align: center;
-    }
+
+.laudo-top-bar {
+    height: 6px;
+    background: linear-gradient(90deg, #0b132a 0%, #00d18e 100%);
+    margin-bottom: 20px;
+    border-radius: 3px;
 }
+
+.laudo-header-block {
+    border-bottom: 2px solid #cbd5e1;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.laudo-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+
+.laudo-shield-badge {
+    background-color: #0b132a;
+    color: #00d18e;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+.laudo-title-main {
+    font-size: 17px;
+    font-weight: 800;
+    color: #0b132a;
+    letter-spacing: -0.01em;
+}
+
+.laudo-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.laudo-meta-grid {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 11px;
+}
+
+.meta-lbl {
+    color: #64748b;
+    margin-right: 4px;
+}
+
+.laudo-block {
+    margin-bottom: 20px;
+}
+
+.laudo-block-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0b132a;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.laudo-info-table, .laudo-grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+.laudo-info-table td {
+    padding: 7px 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.laudo-info-table .lbl-col {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+    width: 28%;
+}
+
+.laudo-info-table .val-col {
+    color: #0f172a;
+}
+
+.font-mono {
+    font-family: monospace;
+    font-size: 11px;
+}
+
+.font-bold {
+    font-weight: 800;
+}
+
+.laudo-status-badge {
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 11px;
+    display: inline-block;
+}
+
+.laudo-callout-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.45;
+    margin-bottom: 8px;
+}
+
+.laudo-callout-box.highlight {
+    border-left: 4px solid #0b132a;
+    background-color: #f1f5f9;
+}
+
+.laudo-grid-table th {
+    background-color: #f1f5f9;
+    color: #334155;
+    font-weight: 700;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    text-align: left;
+}
+
+.laudo-grid-table td {
+    padding: 7px 10px;
+    border: 1px solid #e2e8f0;
+    line-height: 1.35;
+}
+
+.laudo-footer-block {
+    margin-top: 25px;
+    border-top: 1px solid #cbd5e1;
+    padding-top: 12px;
+    text-align: center;
+    font-size: 10px;
+    color: #64748b;
+}
+
+.laudo-hash {
+    margin-top: 4px;
+    font-family: monospace;
+}
+
 
 
 

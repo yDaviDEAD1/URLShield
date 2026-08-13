@@ -118,83 +118,114 @@
                         </div>
                     </div>
 
-                    <!-- Modelo Oculto de Impressão do Laudo Técnico (Print Template) -->
-                    <div id="print-laudo-template" class="print-only-container">
-                        <div class="laudo-header">
-                            <h2>🛡️ LAUDO TÉCNICO DE AUDITORIA DE SEGURANÇA DIGITAL</h2>
-                            <p class="laudo-sub">Sistema URL Shield — Verificação Matemática e Heurística de Fraudes</p>
-                            <div class="laudo-protocol">
-                                <span>PROTOCOL: <strong id="laudo-protocol-num">URLSHIELD-2026-0000</strong></span> | 
-                                <span>DATA/HORA: <strong id="laudo-timestamp">-</strong></span>
+                    <!-- Modelo Dedicado de Impressão de Laudo em PDF (A4 Format) -->
+                    <div id="print-laudo-template" class="pdf-laudo-paper">
+                        <div class="laudo-top-bar"></div>
+                        
+                        <div class="laudo-header-block">
+                            <div class="laudo-brand">
+                                <span class="laudo-shield-badge">URL SHIELD</span>
+                                <span class="laudo-title-main">LAUDO TÉCNICO DE AUDITORIA DE SEGURANÇA DIGITAL</span>
+                            </div>
+                            <p class="laudo-subtitle">Sistema Autônomo de Verificação Matemática e Heurística de Fraudes (TCC)</p>
+                            
+                            <div class="laudo-meta-grid">
+                                <div class="laudo-meta-item">
+                                    <span class="meta-lbl">PROTOCOLO DA AUDITORIA:</span>
+                                    <strong id="laudo-protocol-num">URLSHIELD-2026-0000</strong>
+                                </div>
+                                <div class="laudo-meta-item text-right">
+                                    <span class="meta-lbl">DATA E HORA EMISSÃO:</span>
+                                    <strong id="laudo-timestamp">-</strong>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="laudo-section">
-                            <h3>1. Identificação do Endereço Analisado</h3>
-                            <table class="laudo-table">
-                                <tr><th>URL Completa:</th><td id="laudo-url">-</td></tr>
-                                <tr><th>Domínio Principal:</th><td id="laudo-domain">-</td></tr>
-                                <tr><th>Classificação de Risco:</th><td id="laudo-risk-level"><strong>-</strong></td></tr>
-                                <tr><th>Pontuação de Risco:</th><td id="laudo-risk-score">-</td></tr>
+                        <div class="laudo-block">
+                            <h4 class="laudo-block-title">1. Identificação do Endereço Auditado</h4>
+                            <table class="laudo-info-table">
+                                <tbody>
+                                    <tr>
+                                        <td class="lbl-col">URL Completa:</td>
+                                        <td id="laudo-url" class="val-col font-mono">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl-col">Domínio Registrado:</td>
+                                        <td id="laudo-domain" class="val-col font-mono">-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl-col">Veredito / Nível de Risco:</td>
+                                        <td class="val-col"><span id="laudo-risk-level" class="laudo-status-badge">-</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="lbl-col">Índice Calculado de Risco:</td>
+                                        <td id="laudo-risk-score" class="val-col font-bold">-</td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
 
-                        <div class="laudo-section">
-                            <h3>2. Síntese do Diagnóstico e Orientação</h3>
-                            <p id="laudo-summary-text" class="laudo-text-box"></p>
-                            <p id="laudo-recommendation-text" class="laudo-text-box highlight"></p>
+                        <div class="laudo-block">
+                            <h4 class="laudo-block-title">2. Síntese do Diagnóstico e Orientação ao Usuário</h4>
+                            <div class="laudo-callout-box">
+                                <strong>Resumo: </strong><span id="laudo-summary-text">-</span>
+                            </div>
+                            <div class="laudo-callout-box highlight">
+                                <strong>Orientação de Ação: </strong><span id="laudo-recommendation-text">-</span>
+                            </div>
                         </div>
 
-                        <div class="laudo-section">
-                            <h3>3. Detalhamento dos Indicadores Matemáticos & Redes</h3>
-                            <table class="laudo-table metrics-table">
+                        <div class="laudo-block">
+                            <h4 class="laudo-block-title">3. Matriz Completa de Indicadores Algorítmicos & Redes</h4>
+                            <table class="laudo-grid-table">
                                 <thead>
                                     <tr>
-                                        <th>Métrica / Teste</th>
-                                        <th>Resultado Obtido</th>
-                                        <th>Impacto na Análise</th>
+                                        <th style="width: 32%;">Métrica / Indicador</th>
+                                        <th style="width: 43%;">Resultado Obtido</th>
+                                        <th style="width: 25%;">Avaliação Técnica</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td><strong>Typosquatting (Levenshtein)</strong></td>
                                         <td id="laudo-metric-levenshtein">-</td>
-                                        <td>Identificação de imitação de marca cadastrada.</td>
+                                        <td>Análise de imitação de marca.</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Entropia de Shannon H(X)</strong></td>
                                         <td id="laudo-metric-entropy">-</td>
-                                        <td>Mede aleatoriedade de caracteres no domínio.</td>
+                                        <td>Mede aleatoriedade de caracteres.</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Detecção Homográfica (Unicode)</strong></td>
+                                        <td><strong>Ataque Homográfico (Unicode)</strong></td>
                                         <td id="laudo-metric-homograph">-</td>
-                                        <td>Busca por caracteres cirílicos/ocultos disfarçados.</td>
+                                        <td>Verificação de alfabetos ocultos.</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Idade do Domínio (WHOIS)</strong></td>
                                         <td id="laudo-metric-whois">-</td>
-                                        <td>Domínios recém-criados apresentam alto risco.</td>
+                                        <td>Domínios recentes (<30 dias).</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Certificado SSL/TLS</strong></td>
                                         <td id="laudo-metric-ssl">-</td>
-                                        <td>Validação de criptografia HTTPS de transporte.</td>
+                                        <td>Criptografia HTTPS de transporte.</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Inspeção Ativa HTML (Sandbox)</strong></td>
                                         <td id="laudo-metric-sandbox">-</td>
-                                        <td>Detecção de captura de senhas e palavras suspeitas.</td>
+                                        <td>Rastreamento de formulários/senhas.</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="laudo-footer">
-                            <p>Este documento foi gerado automaticamente pelo algoritmo de auditoria matemática do sistema <strong>URL Shield (Projeto de TCC)</strong>.</p>
-                            <p>Carimbo de Autenticidade Digital: <code>URLSHIELD-VERIFIED-SECURE-HASH-2026</code></p>
+                        <div class="laudo-footer-block">
+                            <p>Laudo gerado automaticamente pelo algoritmo de auditoria matemática do sistema <strong>URL Shield (TCC)</strong>.</p>
+                            <p class="laudo-hash">Hash Digital de Autenticidade: <code>SHA256-URLSHIELD-VERIFIED-2026-TCC-OK</code></p>
                         </div>
                     </div>
+
 
 
 
@@ -278,6 +309,9 @@
         </div>
     </footer>
 
+    <!-- Biblioteca de geração direta de arquivo PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
+
