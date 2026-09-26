@@ -15,3 +15,13 @@ desktop.ini
 
 # Logs e temporários
 *.log
+
+# Android / Gradle
+.gradle/
+.gradle-cache/
+.android-home/
+.local/
+**/build/
+local.properties
+*.apk
+*.aab

@@ -32,6 +32,41 @@ class URLAnalysisRequest(BaseModel):
     url: str
     deep_inspection: Optional[bool] = True
 
+
+def build_mobile_response(report: Dict[str, Any]) -> Dict[str, Any]:
+    """Converte o laudo completo em uma decisão curta para o app protetor."""
+    heuristics = report["heuristics"]
+    explanation = report["accessible_explanation"]
+    risk_level = heuristics["risk_level"]
+
+    if risk_level == "PERIGOSO":
+        verdict = "BLOCK"
+        title = "Não abra este link"
+        primary_action = "Fechar e voltar"
+    elif risk_level == "SUSPEITO":
+        verdict = "WARN"
+        title = "Tenha cuidado"
+        primary_action = "Fechar e voltar"
+    else:
+        verdict = "ALLOW"
+        title = "Nenhum sinal forte de golpe"
+        primary_action = "Abrir site"
+
+    return {
+        "verdict": verdict,
+        "risk_level": risk_level,
+        "risk_score": heuristics["risk_score"],
+        "url": report["url_analyzed"],
+        "domain": report["domain"],
+        "title": title,
+        "summary": explanation["summary"],
+        "recommendation": explanation["recommendation"],
+        "speech_text": explanation["speech_text"],
+        "reasons": explanation.get("reasons", [])[:3],
+        "primary_action": primary_action,
+        "can_continue": True,
+    }
+
 def full_url_analysis(url: str, perform_deep_inspection: bool = True) -> Dict[str, Any]:
     """
     Função principal que orquestra a análise em 4 camadas.
@@ -86,6 +121,19 @@ def analyze_url_endpoint(payload: URLAnalysisRequest):
     try:
         report = full_url_analysis(payload.url, perform_deep_inspection=payload.deep_inspection)
         return report
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro durante a análise da URL: {str(e)}")
+
+
+@app.post("/api/mobile/analyze")
+def analyze_url_for_mobile(payload: URLAnalysisRequest):
+    """Análise rápida e resposta acessível para o interceptador Android."""
+    if not payload.url or len(payload.url) < 3:
+        raise HTTPException(status_code=400, detail="URL inválida ou muito curta.")
+
+    try:
+        report = full_url_analysis(payload.url, perform_deep_inspection=False)
+        return build_mobile_response(report)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro durante a análise da URL: {str(e)}")
 

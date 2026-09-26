@@ -1,6 +1,6 @@
 import unittest
 from app.math_engine import calculate_shannon_entropy, calculate_typosquatting_distance, check_homograph_attack, analyze_url_lexical
-from app.main import full_url_analysis
+from app.main import build_mobile_response, full_url_analysis
 
 class TestURLShieldBackend(unittest.TestCase):
 
@@ -40,6 +40,39 @@ class TestURLShieldBackend(unittest.TestCase):
         self.assertIn("accessible_explanation", result)
         self.assertGreaterEqual(result["heuristics"]["risk_score"], 40.0)
         self.assertEqual(result["heuristics"]["risk_level"], "PERIGOSO")
+
+    def test_mobile_response_blocks_dangerous_link(self):
+        report = full_url_analysis(
+            "http://bancodobras1l-atualizacao.xyz/login",
+            perform_deep_inspection=False,
+        )
+        mobile = build_mobile_response(report)
+
+        self.assertEqual(mobile["verdict"], "BLOCK")
+        self.assertEqual(mobile["title"], "Não abra este link")
+        self.assertEqual(mobile["primary_action"], "Fechar e voltar")
+        self.assertLessEqual(len(mobile["reasons"]), 3)
+
+    def test_mobile_safe_wording_does_not_promise_total_safety(self):
+        report = {
+            "url_analyzed": "https://example.com",
+            "domain": "example.com",
+            "heuristics": {
+                "risk_level": "SEGURO",
+                "risk_score": 0.0,
+            },
+            "accessible_explanation": {
+                "summary": "Não encontramos sinais fortes de golpe.",
+                "recommendation": "Continue com atenção.",
+                "speech_text": "Continue com atenção.",
+                "reasons": [],
+            },
+        }
+
+        mobile = build_mobile_response(report)
+
+        self.assertEqual(mobile["verdict"], "ALLOW")
+        self.assertIn("Nenhum sinal forte", mobile["title"])
 
 if __name__ == "__main__":
     unittest.main()

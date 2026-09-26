@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="navy">#0B132A</color>
+    <color name="green">#087F5B</color>
+    <color name="green_soft">#DFF7ED</color>
+    <color name="amber_soft">#FFF1CC</color>
+    <color name="red_soft">#FEE4E2</color>
+    <color name="surface">#F6F8FB</color>
+    <color name="white">#FFFFFF</color>
+    <color name="text">#172033</color>
+    <color name="muted">#536078</color>
+    <color name="border">#D8DEE9</color>
+</resources>

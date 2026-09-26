@@ -1,10 +1,46 @@
 import socket
 import ssl
+import re
 from datetime import datetime
 from typing import Dict, Any, Optional
 import tldextract
 import dns.resolver
-import whois
+from whois import NICClient, WhoisEntry
+
+
+def _query_whois_server(server: str, query: str, timeout: float = 3.0) -> str:
+    """Executa uma consulta WHOIS garantindo o fechamento do socket em falhas."""
+    response = bytearray()
+    with socket.create_connection((server, 43), timeout=timeout) as connection:
+        connection.settimeout(timeout)
+        connection.sendall(query.encode("utf-8") + b"\r\n")
+        while True:
+            chunk = connection.recv(4096)
+            if not chunk:
+                break
+            response.extend(chunk)
+    return response.decode("utf-8", errors="replace")
+
+
+def _load_whois_entry(domain: str):
+    """Descobre o servidor no IANA e usa o parser do python-whois."""
+    tld = domain.rsplit(".", 1)[-1]
+    iana_response = _query_whois_server("whois.iana.org", tld)
+    match = re.search(r"^whois:\s*(\S+)", iana_response, flags=re.IGNORECASE | re.MULTILINE)
+    if not match:
+        return None
+
+    registry_server = match.group(1).strip()
+    client = NICClient()
+    raw_response = client.whois(
+        domain,
+        registry_server,
+        NICClient.WHOIS_QUICK,
+        quiet=True,
+        ignore_socket_errors=False,
+        timeout=3,
+    )
+    return WhoisEntry.load(domain, raw_response)
 
 def get_domain_age_days(domain: str) -> Optional[int]:
     """
@@ -12,7 +48,9 @@ def get_domain_age_days(domain: str) -> Optional[int]:
     Sites de golpe geralmente são registrados muito recentemente (< 30 dias).
     """
     try:
-        w = whois.whois(domain)
+        w = _load_whois_entry(domain)
+        if not w:
+            return None
         creation_date = w.creation_date
         
         if isinstance(creation_date, list):

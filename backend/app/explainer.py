@@ -10,9 +10,9 @@ def generate_accessible_explanation(heuristic_data: Dict[str, Any], lexical_data
     penalties = heuristic_data.get("penalties", [])
     
     if level == "SEGURO":
-        summary = f"Este endereço de site parece seguro. O nível de risco é de apenas {score}%."
-        speech_text = f"Atenção. O link {domain} foi verificado e é seguro. Não foram encontrados sinais de golpe ou imitação."
-        recommendation = "Você pode navegar com tranquilidade."
+        summary = f"Não encontramos sinais fortes de golpe neste endereço. O nível de risco calculado foi de {score}%."
+        speech_text = f"O link {domain} foi verificado. Não encontramos sinais fortes de golpe, mas continue atento a pedidos de senha, dinheiro ou dados pessoais."
+        recommendation = "Você pode continuar com atenção. Nenhuma análise consegue garantir segurança total."
     elif level == "SUSPEITO":
         summary = f"Cuidado! Este link apresenta sinais suspeitos ({score}% de risco)."
         speech_text = f"Cuidado. O link {domain} é suspeito. Não digite senhas ou dados bancários neste site."

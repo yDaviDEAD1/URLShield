@@ -42,11 +42,13 @@ url-shield-tcc/
 │   ├── requirements.txt
 │   ├── test_backend.py          # Suíte de Testes Unitários
 │   └── run_bot.py               # Executável do Telegram Bot
-└── frontend/
+├── frontend/
     └── public/
         ├── index.html           # Interface Web (Padrão NordVPN)
         ├── styles.css           # Estilização CSS Responsiva
         └── app.js               # Conexão API e Reconhecimento de Voz
+└── android/                     # Aplicativo protetor antes da navegação
+    └── app/                     # MVP Android nativo (Java)
 ```
 
 ---
@@ -72,3 +74,7 @@ python test_backend.py
 ```powershell
 python run_bot.py SEU_TELEGRAM_BOT_TOKEN
 ```
+
+### 4. Executar o protótipo Android
+
+O aplicativo Android pode ser definido como navegador padrão para receber e analisar links antes de abri-los. Consulte [`android/README.md`](android/README.md) para configurar o Android Studio, a API local e o emulador.
