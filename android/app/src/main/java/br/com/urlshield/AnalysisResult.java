@@ -19,6 +19,10 @@ final class AnalysisResult {
     final double riskScore;
     final List<String> reasons;
     final boolean offline;
+    /** Domínio oficial que o link está imitando, ou "" se nenhum. */
+    final String impersonates;
+    /** O próprio domínio é oficial e conhecido (ex: itau.com.br). */
+    final boolean trusted;
 
     private AnalysisResult(
             String verdict,
@@ -30,7 +34,9 @@ final class AnalysisResult {
             String speechText,
             double riskScore,
             List<String> reasons,
-            boolean offline
+            boolean offline,
+            String impersonates,
+            boolean trusted
     ) {
         this.verdict = verdict;
         this.url = url;
@@ -42,6 +48,8 @@ final class AnalysisResult {
         this.riskScore = riskScore;
         this.reasons = reasons;
         this.offline = offline;
+        this.impersonates = impersonates;
+        this.trusted = trusted;
     }
 
     static AnalysisResult fromJson(JSONObject json) throws JSONException {
@@ -66,7 +74,9 @@ final class AnalysisResult {
                 json.optString("speech_text", ""),
                 json.optDouble("risk_score", 0.0),
                 reasons,
-                false
+                false,
+                json.optString("impersonates", ""),
+                json.optBoolean("trusted", false)
         );
     }
 
@@ -100,7 +110,8 @@ final class AnalysisResult {
 
         List<String> reasons = new ArrayList<>(report.reasons.subList(0, Math.min(3, report.reasons.size())));
         return new AnalysisResult(verdict, report.url, report.domain, title, summary,
-                recommendation, speechText, report.riskScore, reasons, true);
+                recommendation, speechText, report.riskScore, reasons, true,
+                report.impersonates, report.trusted);
     }
 
     boolean isAllowed() {

@@ -1,32 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">URLShield</string>
+    <string name="app_name">URL Shield</string>
+
+    <!-- Tela de configuração -->
     <string name="setup_title">Proteção antes do clique</string>
-    <string name="setup_description">Ative o URLShield para verificar os links antes da abertura.</string>
+    <string name="setup_description">Quando você tocar em um link no WhatsApp, SMS ou e-mail, o URL Shield confere antes de abrir.</string>
+    <string name="protection_on_title">Proteção ativa</string>
+    <string name="protection_on_description">Os links que você tocar serão conferidos antes de abrir. Você não precisa fazer mais nada.</string>
     <string name="activate_protection">Ativar proteção</string>
     <string name="deactivate_protection">Desativar proteção</string>
     <string name="deactivate_title">Desativar a proteção?</string>
-    <string name="deactivate_message">Os links deixarão de ser verificados pelo URLShield. Na próxima tela, escolha outro aplicativo de navegador, como o Chrome.</string>
+    <string name="deactivate_message">Os links deixarão de ser conferidos. Na próxima tela, escolha outro navegador, como o Chrome.</string>
     <string name="keep_protection">Manter proteção</string>
     <string name="open_settings">Abrir configurações</string>
-    <string name="protection_active">Proteção ativa neste aparelho</string>
-    <string name="test_link_hint">Cole um link para testar</string>
-    <string name="analyze_link">Verificar link</string>
-    <string name="checking_title">Verificando o link…</string>
-    <string name="checking_description">Aguarde. Não abriremos o site durante a análise.</string>
-    <string name="close_and_return">Fechar e voltar</string>
-    <string name="listen_explanation">Ouvir explicação</string>
-    <string name="ask_family">Pedir ajuda à família</string>
+    <string name="browser_label">Sites seguros abrem no</string>
+    <string name="browser_change">Trocar</string>
+    <string name="browser_none">Nenhum navegador encontrado</string>
+    <string name="browser_pick_title">Abrir os sites no…</string>
+    <string name="test_label">Testar um link</string>
+    <string name="test_link_hint">Cole um link aqui</string>
+    <string name="analyze_link">Conferir link</string>
+    <string name="invalid_link">Digite um endereço válido.</string>
+
+    <!-- Pop-up de verificação -->
+    <string name="checking_title">Conferindo o link…</string>
+    <string name="checking_description">Não abrimos o site durante a análise.</string>
+    <string name="title_block">Não abra este link</string>
+    <string name="title_warn">Tenha cuidado</string>
+    <string name="title_allow">Pode abrir, com atenção</string>
+    <string name="label_why">Por que</string>
+    <string name="label_remember">Lembre sempre</string>
+    <string name="tip_bank">Nenhum banco pede sua senha por mensagem.</string>
+    <string name="tip_hurry">Se pedirem dinheiro com pressa, desconfie.</string>
     <string name="open_site">Abrir site</string>
-    <string name="continue_anyway">Continuar mesmo assim</string>
-    <string name="reasons_label">Por que recebemos esse resultado</string>
-    <string name="risk_format">Risco calculado: %1$.0f%%</string>
-    <string name="browser_close">Fechar</string>
-    <string name="browser_back">Voltar</string>
-    <string name="status_shield">🛡️</string>
-    <string name="verification_failed_title">Não conseguimos verificar</string>
-    <string name="site_not_opened">Site não aberto</string>
-    <string name="verification_failed_summary">A conexão com o serviço de proteção falhou.</string>
-    <string name="verification_failed_recommendation">Por segurança, não abrimos este link. Tente novamente mais tarde ou peça ajuda a um familiar.</string>
-    <string name="offline_analysis_note">Análise feita no próprio celular. A consulta completa ao servidor (idade do site e certificado de segurança) não estava disponível.</string>
+    <string name="close_and_return">Fechar e voltar</string>
+    <string name="ask_family">Família</string>
+    <string name="listen">Ouvir</string>
+    <string name="continue_anyway">Abrir mesmo assim</string>
+    <string name="confirm_title">Abrir mesmo assim?</string>
+    <string name="confirm_message">O URL Shield recomenda não abrir este endereço. Nunca informe senhas, códigos ou dados do banco.</string>
+    <string name="confirm_back">Voltar</string>
+    <string name="confirm_open">Abrir</string>
+    <string name="offline_note">Conferido no celular · servidor indisponível</string>
+    <string name="failed_title">Não conseguimos conferir</string>
+    <string name="failed_summary">Por segurança, não abrimos este link. Tente de novo mais tarde ou peça ajuda a alguém da família.</string>
+    <string name="no_browser">Não encontramos outro navegador para abrir o site. Instale o Google Chrome.</string>
+    <string name="tts_starting">A leitura em voz alta ainda está iniciando.</string>
+    <string name="share_title">Pedir ajuda usando</string>
 </resources>

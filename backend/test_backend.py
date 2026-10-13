@@ -52,6 +52,9 @@ class TestURLShieldBackend(unittest.TestCase):
         self.assertEqual(mobile["title"], "Não abra este link")
         self.assertEqual(mobile["primary_action"], "Fechar e voltar")
         self.assertLessEqual(len(mobile["reasons"]), 3)
+        self.assertEqual(mobile["impersonates"], "bancodobrasil.com.br")
+        self.assertFalse(mobile["trusted"])
+        self.assertNotIn("imprevisibilidade", " ".join(mobile["reasons"]))
 
     def test_mobile_safe_wording_does_not_promise_total_safety(self):
         report = {

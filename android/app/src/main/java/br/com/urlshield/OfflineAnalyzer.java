@@ -76,13 +76,18 @@ final class OfflineAnalyzer {
         final double riskScore;
         final String riskLevel;
         final List<String> reasons;
+        final String impersonates;
+        final boolean trusted;
 
-        Report(String url, String domain, double riskScore, String riskLevel, List<String> reasons) {
+        Report(String url, String domain, double riskScore, String riskLevel, List<String> reasons,
+               String impersonates, boolean trusted) {
             this.url = url;
             this.domain = domain;
             this.riskScore = riskScore;
             this.riskLevel = riskLevel;
             this.reasons = reasons;
+            this.impersonates = impersonates;
+            this.trusted = trusted;
         }
     }
 
@@ -116,43 +121,42 @@ final class OfflineAnalyzer {
         String homographReason = homographReason(host);
         if (homographReason != null) {
             score += 35.0;
-            reasons.add(homographReason);
+            reasons.add("O endereço usa letras de outro alfabeto que parecem iguais às nossas.");
         }
 
         // 3. Entropia de Shannon alta no domínio
         double entropy = shannonEntropy(registered);
         if (entropy > 3.5) {
             score += 15.0;
-            reasons.add("O nome do domínio possui alta imprevisibilidade matemática ("
-                    + String.format(Locale.US, "%.4f", entropy) + "), típica de links gerados por robôs.");
+            reasons.add("O nome do site parece inventado às pressas.");
         }
 
         // 4. IP numérico direto
         if (RAW_IP.matcher(url).matches()) {
             score += 25.0;
-            reasons.add("O link usa um endereço IP numérico direto sem um nome de domínio registrado.");
+            reasons.add("O link usa números no lugar do nome de um site.");
         }
 
         // 4b. Encurtador de link
         if (URL_SHORTENERS.contains(registered)) {
             score += 30.0;
-            reasons.add("Este é um link encurtado, que esconde o endereço verdadeiro do site de destino.");
+            reasons.add("O link é encurtado e esconde o endereço verdadeiro.");
         }
 
         // 6. Sem conexão segura (offline só é possível verificar o esquema https)
         if ("http".equalsIgnoreCase(uri.getScheme())) {
             score += 15.0;
-            reasons.add("O link não usa conexão segura (https).");
+            reasons.add("O link não usa o cadeado de conexão segura.");
         }
 
         // 7. Símbolos especiais
         if (url.indexOf('@') >= 0) {
             score += 20.0;
-            reasons.add("O caractere '@' na URL faz o navegador ignorar a primeira parte e redirecionar para um destino oculto.");
+            reasons.add("O link usa um truque com \"@\" para esconder o destino verdadeiro.");
         }
         if (countChar(url, '-') > 3) {
             score += 10.0;
-            reasons.add("Domínios de golpe frequentemente usam múltiplos hífens para parecerem legítimos.");
+            reasons.add("O endereço tem muitos hífens, comum em sites falsos.");
         }
 
         double finalScore = Math.min(Math.round(score * 10.0) / 10.0, 100.0);
@@ -164,7 +168,8 @@ final class OfflineAnalyzer {
         } else {
             level = LEVEL_DANGEROUS;
         }
-        return new Report(url, registered, finalScore, level, reasons);
+        return new Report(url, registered, finalScore, level, reasons,
+                impersonation != null ? impersonation.matched : "", isTrusted(registered));
     }
 
     /** Retorna {nome do domínio, domínio registrado}, ex: "www.itau.com.br" -> {"itau", "itau.com.br"}. */

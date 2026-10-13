@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Pop-up que sobe por cima do app de origem com o veredito do link -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrim"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/scrim">
+
+    <LinearLayout
+        android:id="@+id/sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/sheet_background"
+        android:clickable="true"
+        android:focusable="false"
+        android:orientation="vertical">
+
+        <!-- wrap_content + peso: cresce com o conteúdo e só rola quando não cabe na tela -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Carregando -->
+                <LinearLayout
+                    android:id="@+id/loadingBlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingTop="40dp"
+                    android:paddingBottom="40dp">
+
+                    <ProgressBar
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:indeterminateTint="@color/ink" />
+
+                    <TextView
+                        style="@style/Text.Display"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="@string/checking_title"
+                        android:textSize="30sp" />
+
+                    <TextView
+                        style="@style/Text.Body"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/checking_description"
+                        android:textColor="@color/ink_2" />
+                </LinearLayout>
+
+                <!-- Veredito: a cor ocupa o topo inteiro -->
+                <LinearLayout
+                    android:id="@+id/verdictBlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="26dp"
+                    android:paddingTop="30dp"
+                    android:paddingEnd="26dp"
+                    android:paddingBottom="30dp"
+                    android:visibility="gone">
+
+                    <FrameLayout
+                        android:id="@+id/verdictTile"
+                        android:layout_width="84dp"
+                        android:layout_height="84dp"
+                        android:background="@drawable/tile_background">
+
+                        <ImageView
+                            android:id="@+id/verdictIcon"
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            android:layout_gravity="center"
+                            android:importantForAccessibility="no" />
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/verdictTitle"
+                        style="@style/Text.Display"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:accessibilityHeading="true"
+                        android:textSize="40sp" />
+
+                    <TextView
+                        android:id="@+id/verdictSubtitle"
+                        style="@style/Text.Body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/verdictDomain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/chip_background"
+                        android:ellipsize="middle"
+                        android:fontFamily="monospace"
+                        android:maxLines="1"
+                        android:paddingStart="12dp"
+                        android:paddingTop="6dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="6dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Motivos e dicas -->
+                <LinearLayout
+                    android:id="@+id/bodyBlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingStart="24dp"
+                    android:paddingTop="22dp"
+                    android:paddingEnd="24dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/reasonsLabel"
+                        style="@style/Text.Label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:accessibilityHeading="true" />
+
+                    <LinearLayout
+                        android:id="@+id/reasonsList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Ações: sempre visíveis no rodapé -->
+        <LinearLayout
+            android:id="@+id/actionsBlock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="12dp"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/primaryButton"
+                style="@style/Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="66dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/familyButton"
+                    style="@style/Button.Outline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_family"
+                    android:text="@string/ask_family" />
+
+                <Space
+                    android:layout_width="12dp"
+                    android:layout_height="1dp" />
+
+                <Button
+                    android:id="@+id/listenButton"
+                    style="@style/Button.Outline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableStart="@drawable/ic_speaker"
+                    android:text="@string/listen" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/continueButton"
+                style="@style/Button.Link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/continue_anyway" />
+
+            <TextView
+                android:id="@+id/offlineNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="@string/offline_note"
+                android:textColor="@color/ink_3"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

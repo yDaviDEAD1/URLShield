@@ -11,7 +11,7 @@ from app.math_engine import analyze_url_lexical, TRUSTED_DOMAINS
 from app.network_checker import analyze_network
 from app.sandbox_crawler import inspect_page_safely
 from app.heuristics import calculate_heuristic_score
-from app.explainer import generate_accessible_explanation
+from app.explainer import generate_accessible_explanation, friendly_reasons
 
 app = FastAPI(
     title="URL Shield API",
@@ -39,6 +39,7 @@ def build_mobile_response(report: Dict[str, Any]) -> Dict[str, Any]:
     heuristics = report["heuristics"]
     explanation = report["accessible_explanation"]
     risk_level = heuristics["risk_level"]
+    typosquat = report.get("technical_details", {}).get("lexical_math", {}).get("typosquat_info", {})
 
     if risk_level == "PERIGOSO":
         verdict = "BLOCK"
@@ -63,7 +64,9 @@ def build_mobile_response(report: Dict[str, Any]) -> Dict[str, Any]:
         "summary": explanation["summary"],
         "recommendation": explanation["recommendation"],
         "speech_text": explanation["speech_text"],
-        "reasons": explanation.get("reasons", [])[:3],
+        "reasons": friendly_reasons(heuristics.get("penalties", []))[:3],
+        "impersonates": typosquat.get("best_matched_domain", "") if typosquat.get("is_typosquat") else "",
+        "trusted": bool(typosquat.get("is_trusted")),
         "primary_action": primary_action,
         "can_continue": True,
     }

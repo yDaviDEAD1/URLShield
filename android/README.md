@@ -4,16 +4,17 @@ Aplicativo protetor que recebe links antes da navegação, consulta a API do URL
 
 ## Fluxo implementado
 
-1. Um familiar ativa o URLShield como aplicativo de navegador padrão.
-2. O idoso toca normalmente em um link `http` ou `https`.
-3. O Android envia o link ao URLShield.
-4. O motor offline (`OfflineAnalyzer`) analisa o link no próprio aparelho: Levenshtein, entropia de Shannon, homógrafos, leetspeak, IP direto e encurtadores.
-5. Se o motor offline já indicar perigo, o link é bloqueado na hora. Caso contrário, e se houver servidor configurado, o app chama `POST /api/mobile/analyze` para a análise completa (WHOIS, certificado SSL, DNS).
-6. O resultado permite abrir, recomenda cautela ou bloqueia o link.
-7. Se o usuário decidir continuar, o site abre no navegador interno protegido.
-8. Navegações dentro do mesmo site continuam no navegador protegido; a mudança para outro domínio passa por nova análise.
+1. Um familiar ativa o URL Shield como navegador padrão e escolhe em qual navegador os sites seguros devem abrir (Chrome por padrão).
+2. O idoso toca normalmente em um link `http` ou `https` no WhatsApp, SMS ou e-mail.
+3. Em vez de abrir o site, aparece um pop-up do URL Shield por cima da conversa (`LinkCheckActivity`).
+4. O motor offline (`OfflineAnalyzer`) analisa o link no próprio aparelho: Levenshtein, entropia de Shannon, homógrafos, leetspeak, IP direto e encurtadores. Se já indicar perigo, o veredito aparece na hora.
+5. Caso contrário, e se houver servidor configurado, o app chama `POST /api/mobile/analyze` para a análise completa (WHOIS, certificado SSL, DNS).
+6. O pop-up mostra o veredito em tela colorida: **Pode abrir** (botão "Abrir site"), **Tenha cuidado** ou **Não abra** (botão "Fechar e voltar", com "Abrir mesmo assim" discreto).
+7. Ao abrir, o link é encaminhado diretamente ao navegador escolhido. A pessoa continua no navegador que já conhece.
 
-Se o servidor estiver indisponível (sem internet, API fora do ar ou APK gerado sem servidor), o aplicativo usa o resultado do motor offline e avisa que a consulta completa não foi feita. Os pesos e limiares do motor offline são os mesmos de `backend/app/heuristics.py`.
+Se o servidor estiver indisponível (sem internet, API fora do ar ou APK gerado sem servidor), o pop-up usa o resultado do motor offline e avisa no rodapé. Os pesos e limiares do motor offline são os mesmos de `backend/app/heuristics.py`.
+
+O app não tem navegador próprio: depois de aprovado, o site abre no navegador de verdade, e as navegações dentro dele não são reanalisadas.
 
 ## Pré-requisitos
 
@@ -60,6 +61,5 @@ O build `release` rejeita tráfego HTTP sem criptografia. O HTTP local é permit
 
 - O protótipo ainda não possui assinatura de produção nem publicação na Play Store.
 - A configuração inicial como navegador padrão exige consentimento do usuário ou de um familiar.
-- O navegador interno é propositalmente simples e reanalisa navegações principais.
 - O motor offline não consulta WHOIS nem valida o certificado SSL; ele só verifica se o link usa `https`.
 - Antes de uso real, a API deve estar publicada em HTTPS, autenticada e protegida contra abuso.

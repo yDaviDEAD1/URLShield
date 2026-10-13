@@ -1,12 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.URLShield" parent="android:style/Theme.Material.Light.NoActionBar">
-        <item name="android:fontFamily">sans</item>
+        <item name="android:fontFamily">@font/atkinson</item>
+        <item name="android:windowBackground">@color/paper</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:colorAccent">@color/ink</item>
+        <item name="android:colorControlActivated">@color/ink</item>
+    </style>
+
+    <!-- Pop-up por cima do app de origem (WhatsApp, SMS...) -->
+    <style name="Theme.URLShield.Popup">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:statusBarColor">@color/navy</item>
-        <item name="android:navigationBarColor">@color/navy</item>
-        <item name="android:windowBackground">@color/surface</item>
-        <item name="android:colorAccent">@color/green</item>
-        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
+
+    <style name="Text.Display" parent="">
+        <item name="android:fontFamily">@font/fraunces</item>
+        <item name="android:fontVariationSettings">"'wght' 600, 'opsz' 72"</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.Body" parent="">
+        <item name="android:fontFamily">@font/atkinson</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">19sp</item>
+        <item name="android:lineSpacingMultiplier">1.2</item>
+    </style>
+
+    <style name="Text.Label" parent="">
+        <item name="android:fontFamily">@font/atkinson</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/ink_3</item>
+    </style>
+
+    <style name="Button.Base" parent="android:style/Widget.Material.Button.Borderless">
+        <item name="android:fontFamily">@font/atkinson</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:stateListAnimator">@null</item>
+    </style>
+
+    <style name="Button.Primary" parent="Button.Base">
+        <item name="android:background">@drawable/btn_ink</item>
+        <item name="android:textColor">@color/paper</item>
+    </style>
+
+    <style name="Button.Go" parent="Button.Base">
+        <item name="android:background">@drawable/btn_safe</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Button.Outline" parent="Button.Base">
+        <item name="android:background">@drawable/btn_outline</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:minHeight">60dp</item>
+    </style>
+
+    <style name="Button.Link" parent="Button.Base">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/ink_3</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:minHeight">48dp</item>
     </style>
 </resources>
