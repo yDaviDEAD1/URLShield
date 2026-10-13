@@ -41,7 +41,7 @@
     <string name="confirm_message">O URL Shield recomenda não abrir este endereço. Nunca informe senhas, códigos ou dados do banco.</string>
     <string name="confirm_back">Voltar</string>
     <string name="confirm_open">Abrir</string>
-    <string name="offline_note">Conferido no celular · servidor indisponível</string>
+    <string name="offline_note">Conferido no próprio celular</string>
     <string name="failed_title">Não conseguimos conferir</string>
     <string name="failed_summary">Por segurança, não abrimos este link. Tente de novo mais tarde ou peça ajuda a alguém da família.</string>
     <string name="no_browser">Não encontramos outro navegador para abrir o site. Instale o Google Chrome.</string>

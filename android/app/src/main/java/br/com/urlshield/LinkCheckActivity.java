@@ -59,7 +59,7 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_link_check);
         bindViews();
-        Links.applySystemBarInsets(this, findViewById(R.id.scrim), findViewById(R.id.sheet));
+        Links.applySystemBarInsets(this, findViewById(R.id.scrim), findViewById(R.id.sheet), false);
         textToSpeech = new TextToSpeech(this, this);
         handleIntent(getIntent());
     }
@@ -233,6 +233,7 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
             continueButton.setVisibility(View.VISIBLE);
         }
         bodyBlock.setVisibility(bodyBlockHasContent() ? View.VISIBLE : View.GONE);
+        centerButtons();
         offlineNote.setVisibility(result.offline ? View.VISIBLE : View.GONE);
 
         verdictTitle.announceForAccessibility(verdictTitle.getText() + ". " + verdictSubtitle.getText());
@@ -323,6 +324,13 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         listenButton.setVisibility(View.GONE);
         continueButton.setVisibility(View.GONE);
         offlineNote.setVisibility(View.GONE);
+        centerButtons();
+    }
+
+    private void centerButtons() {
+        Links.centerIconAndText(primaryButton);
+        Links.centerIconAndText(findViewById(R.id.familyButton));
+        Links.centerIconAndText(listenButton);
     }
 
     private void confirmContinue() {

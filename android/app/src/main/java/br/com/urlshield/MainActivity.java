@@ -40,7 +40,7 @@ public final class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         View root = findViewById(R.id.root);
-        Links.applySystemBarInsets(this, root, root);
+        Links.applySystemBarInsets(this, root, root, true);
 
         statusTile = findViewById(R.id.statusTile);
         statusIcon = findViewById(R.id.statusIcon);

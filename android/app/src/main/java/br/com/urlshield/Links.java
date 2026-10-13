@@ -3,9 +3,12 @@ package br.com.urlshield;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
+import android.graphics.drawable.Drawable;
 import android.util.Patterns;
 import android.view.View;
 import android.view.WindowInsets;
+import android.view.WindowInsetsController;
+import android.widget.TextView;
 
 import java.net.URI;
 import java.util.regex.Matcher;
@@ -62,14 +65,24 @@ final class Links {
      * aplica a altura delas como espaçamento extra nas views indicadas.
      */
     @SuppressWarnings("deprecation")
-    static void applySystemBarInsets(Activity activity, View topTarget, View bottomTarget) {
+    static void applySystemBarInsets(Activity activity, View topTarget, View bottomTarget, boolean darkIcons) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             activity.getWindow().setDecorFitsSystemWindows(false);
+            WindowInsetsController controller = activity.getWindow().getInsetsController();
+            if (controller != null) {
+                int light = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                        | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+                controller.setSystemBarsAppearance(darkIcons ? light
+                        : WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS, light);
+            }
         } else {
-            activity.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+            int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            if (darkIcons) {
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
+            activity.getWindow().getDecorView().setSystemUiVisibility(flags);
         }
 
         final int topBase = topTarget.getPaddingTop();
@@ -96,5 +109,23 @@ final class Links {
             return view.onApplyWindowInsets(insets);
         });
         decor.requestApplyInsets();
+    }
+
+    /**
+     * Centraliza ícone + texto juntos no botão (por padrão o Android cola o ícone na borda).
+     * Chamar depois de trocar o texto ou o ícone.
+     */
+    static void centerIconAndText(TextView button) {
+        button.post(() -> {
+            Drawable[] drawables = button.getCompoundDrawablesRelative();
+            Drawable icon = drawables[0] != null ? drawables[0] : drawables[2];
+            float textWidth = button.getPaint().measureText(button.getText().toString());
+            int content = Math.round(textWidth);
+            if (icon != null) {
+                content += icon.getIntrinsicWidth() + button.getCompoundDrawablePadding();
+            }
+            int side = Math.max(0, (button.getWidth() - content) / 2);
+            button.setPaddingRelative(side, button.getPaddingTop(), side, button.getPaddingBottom());
+        });
     }
 }
