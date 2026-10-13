@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pop-up que sobe por cima do app de origem com o veredito do link -->
+<!-- Pop-up compacto: sobe por cima do app de origem e cresce conforme a gravidade.
+     A conversa continua visível atrás para a pessoa não perder o contexto. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/scrim"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/scrim">
+    android:background="@color/scrim"
+    android:importantForAccessibility="no">
 
     <LinearLayout
         android:id="@+id/sheet"
@@ -14,9 +16,11 @@
         android:background="@drawable/sheet_background"
         android:clickable="true"
         android:focusable="false"
+        android:importantForAccessibility="no"
         android:orientation="vertical">
 
-        <!-- wrap_content + peso: cresce com o conteúdo e só rola quando não cabe na tela -->
+        <!-- wrap_content + peso: cresce com o conteúdo e só rola quando não cabe
+             (ex.: fonte do sistema em 200%) -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,67 +36,85 @@
                     android:id="@+id/loadingBlock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:orientation="vertical"
-                    android:paddingTop="40dp"
-                    android:paddingBottom="40dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="24dp"
+                    android:paddingTop="28dp"
+                    android:paddingEnd="24dp"
+                    android:paddingBottom="28dp">
 
                     <ProgressBar
-                        android:layout_width="56dp"
-                        android:layout_height="56dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:indeterminateTint="@color/ink" />
 
-                    <TextView
-                        style="@style/Text.Display"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/checking_title"
-                        android:textSize="30sp" />
+                        android:layout_marginStart="18dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        style="@style/Text.Body"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/checking_description"
-                        android:textColor="@color/ink_2" />
+                        <TextView
+                            style="@style/Text.Display"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/checking_title"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            style="@style/Text.Body"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="@string/checking_description"
+                            android:textColor="@color/ink_2"
+                            android:textSize="17sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
-                <!-- Veredito: a cor ocupa o topo inteiro -->
+                <!-- Veredito: ícone ao lado do título -->
                 <LinearLayout
                     android:id="@+id/verdictBlock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="26dp"
-                    android:paddingTop="30dp"
-                    android:paddingEnd="26dp"
-                    android:paddingBottom="30dp"
+                    android:paddingStart="22dp"
+                    android:paddingTop="22dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="20dp"
                     android:visibility="gone">
 
-                    <FrameLayout
-                        android:id="@+id/verdictTile"
-                        android:layout_width="84dp"
-                        android:layout_height="84dp"
-                        android:background="@drawable/tile_background">
-
-                        <ImageView
-                            android:id="@+id/verdictIcon"
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:layout_gravity="center"
-                            android:importantForAccessibility="no" />
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/verdictTitle"
-                        style="@style/Text.Display"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:accessibilityHeading="true"
-                        android:textSize="40sp" />
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:id="@+id/verdictTile"
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:background="@drawable/tile_background">
+
+                            <ImageView
+                                android:id="@+id/verdictIcon"
+                                android:layout_width="34dp"
+                                android:layout_height="34dp"
+                                android:layout_gravity="center"
+                                android:importantForAccessibility="no" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:id="@+id/verdictTitle"
+                            style="@style/Text.Display"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:accessibilityHeading="true"
+                            android:textSize="28sp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/verdictSubtitle"
@@ -100,33 +122,33 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/verdictDomain"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="12dp"
                         android:background="@drawable/chip_background"
                         android:ellipsize="middle"
                         android:fontFamily="monospace"
                         android:maxLines="1"
-                        android:paddingStart="12dp"
-                        android:paddingTop="6dp"
-                        android:paddingEnd="12dp"
-                        android:paddingBottom="6dp"
-                        android:textSize="16sp" />
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="5dp"
+                        android:textSize="15sp" />
                 </LinearLayout>
 
-                <!-- Motivos e dicas -->
+                <!-- Motivos: só o principal à mostra; o resto a um toque -->
                 <LinearLayout
                     android:id="@+id/bodyBlock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="24dp"
-                    android:paddingTop="22dp"
-                    android:paddingEnd="24dp"
+                    android:paddingStart="22dp"
+                    android:paddingTop="14dp"
+                    android:paddingEnd="22dp"
                     android:visibility="gone">
 
                     <TextView
@@ -134,28 +156,40 @@
                         style="@style/Text.Label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:accessibilityHeading="true" />
+                        android:accessibilityHeading="true"
+                        android:text="@string/label_why" />
 
                     <LinearLayout
                         android:id="@+id/reasonsList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="2dp"
                         android:orientation="vertical" />
+
+                    <Button
+                        android:id="@+id/moreReasonsButton"
+                        style="@style/Button.Link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="8dp"
+                        android:textColor="@color/ink_2"
+                        android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
-        <!-- Ações: sempre visíveis no rodapé -->
+        <!-- Ações: sempre visíveis, na zona do polegar -->
         <LinearLayout
             android:id="@+id/actionsBlock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="24dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="24dp"
-            android:paddingBottom="12dp"
+            android:paddingStart="22dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="22dp"
+            android:paddingBottom="8dp"
             android:visibility="gone">
 
             <Button
@@ -163,12 +197,12 @@
                 style="@style/Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="66dp" />
+                android:minHeight="60dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
                 <Button
@@ -178,10 +212,12 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:drawableStart="@drawable/ic_family"
-                    android:text="@string/ask_family" />
+                    android:minHeight="52dp"
+                    android:text="@string/ask_family"
+                    android:textSize="17sp" />
 
                 <Space
-                    android:layout_width="12dp"
+                    android:layout_width="10dp"
                     android:layout_height="1dp" />
 
                 <Button
@@ -191,7 +227,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:drawableStart="@drawable/ic_speaker"
-                    android:text="@string/listen" />
+                    android:minHeight="52dp"
+                    android:text="@string/listen"
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <Button
@@ -199,18 +237,19 @@
                 style="@style/Button.Link"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="@string/continue_anyway" />
+                android:layout_marginTop="2dp"
+                android:text="@string/continue_anyway"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/offlineNote"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:gravity="center"
+                android:paddingBottom="4dp"
                 android:text="@string/offline_note"
                 android:textColor="@color/ink_3"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>

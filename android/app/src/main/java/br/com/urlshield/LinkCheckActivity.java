@@ -5,12 +5,16 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -19,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -30,6 +33,7 @@ import java.util.concurrent.Executors;
  * Mostra o veredito e, se ela decidir abrir, encaminha o link ao navegador de verdade.
  */
 public final class LinkCheckActivity extends Activity implements TextToSpeech.OnInitListener {
+    private static final String TAG = "URLShield";
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
@@ -43,6 +47,7 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
     private View bodyBlock;
     private TextView reasonsLabel;
     private LinearLayout reasonsList;
+    private Button moreReasonsButton;
     private View actionsBlock;
     private Button primaryButton;
     private Button listenButton;
@@ -53,6 +58,8 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
     private AnalysisResult currentResult;
     private TextToSpeech textToSpeech;
     private boolean ttsReady;
+    private boolean ttsFailed;
+    private String pendingSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +89,8 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         bodyBlock = findViewById(R.id.bodyBlock);
         reasonsLabel = findViewById(R.id.reasonsLabel);
         reasonsList = findViewById(R.id.reasonsList);
+        moreReasonsButton = findViewById(R.id.moreReasonsButton);
+        moreReasonsButton.setPaintFlags(moreReasonsButton.getPaintFlags() | android.graphics.Paint.UNDERLINE_TEXT_FLAG);
         actionsBlock = findViewById(R.id.actionsBlock);
         primaryButton = findViewById(R.id.primaryButton);
         listenButton = findViewById(R.id.listenButton);
@@ -215,26 +224,43 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         verdictDomain.setBackground(rounded(chip, 8));
         verdictDomain.setVisibility(View.VISIBLE);
 
+        // Tamanho proporcional ao risco: "Pode abrir" não lista nada, "Tenha cuidado"
+        // só mostra motivo se a frase principal não explicar, "Não abra" mostra até 2.
+        int visibleReasons;
         if (result.isAllowed()) {
-            reasonsLabel.setText(R.string.label_remember);
-            fillReasons(Arrays.asList(getString(R.string.tip_bank), getString(R.string.tip_hurry)), dot);
+            visibleReasons = 0;
+        } else if (result.isBlocked()) {
+            visibleReasons = 2;
+        } else {
+            visibleReasons = subtitleExplainsRisk(result) ? 0 : 1;
+        }
+        // Se a frase principal já explica e só há um motivo, não há o que expandir
+        boolean nothingToAdd = result.isAllowed()
+                || (!result.isBlocked() && subtitleExplainsRisk(result) && result.reasons.size() <= 1);
+        showReasons(nothingToAdd ? java.util.Collections.<String>emptyList() : result.reasons,
+                visibleReasons, dot);
+
+        if (result.isAllowed()) {
             primaryButton.setText(R.string.open_site);
             primaryButton.setBackgroundResource(R.drawable.btn_safe);
             primaryButton.setTextColor(getColor(R.color.white));
             primaryButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_arrow, 0);
             continueButton.setVisibility(View.GONE);
         } else {
-            reasonsLabel.setText(R.string.label_why);
-            fillReasons(result.reasons, dot);
             primaryButton.setText(R.string.close_and_return);
             primaryButton.setBackgroundResource(R.drawable.btn_ink);
             primaryButton.setTextColor(getColor(R.color.paper));
             primaryButton.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0);
             continueButton.setVisibility(View.VISIBLE);
         }
-        bodyBlock.setVisibility(bodyBlockHasContent() ? View.VISIBLE : View.GONE);
         centerButtons();
         offlineNote.setVisibility(result.offline ? View.VISIBLE : View.GONE);
+
+        // Vibração curta no perigo, para quem não está olhando direito para a tela
+        if (result.isBlocked()) {
+            verdictBlock.performHapticFeedback(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                    ? HapticFeedbackConstants.REJECT : HapticFeedbackConstants.LONG_PRESS);
+        }
 
         verdictTitle.announceForAccessibility(verdictTitle.getText() + ". " + verdictSubtitle.getText());
     }
@@ -263,12 +289,48 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         return "Encontramos sinais suspeitos neste endereço.";
     }
 
+    private boolean subtitleExplainsRisk(AnalysisResult result) {
+        if (!result.impersonates.isEmpty()) {
+            return true;
+        }
+        for (String reason : result.reasons) {
+            if (reason.toLowerCase(Locale.ROOT).contains("encurtado")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Mostra os primeiros motivos; os demais ficam atrás de um botão "Ver…". */
+    private void showReasons(List<String> reasons, int visible, int dotColor) {
+        int shown = Math.min(visible, reasons.size());
+        fillReasons(reasons.subList(0, shown), dotColor);
+        int hidden = reasons.size() - shown;
+        if (hidden > 0) {
+            moreReasonsButton.setText(shown == 0
+                    ? getString(R.string.see_reasons, reasons.size())
+                    : getString(R.string.see_all_reasons, reasons.size()));
+            moreReasonsButton.setVisibility(View.VISIBLE);
+            moreReasonsButton.setOnClickListener(view -> {
+                fillReasons(reasons, dotColor);
+                moreReasonsButton.setVisibility(View.GONE);
+                reasonsLabel.setVisibility(View.VISIBLE);
+                reasonsList.getChildAt(Math.min(shown * 2, reasonsList.getChildCount() - 1))
+                        .sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED);
+            });
+        } else {
+            moreReasonsButton.setVisibility(View.GONE);
+        }
+        reasonsLabel.setVisibility(shown > 0 ? View.VISIBLE : View.GONE);
+        bodyBlock.setVisibility(reasons.isEmpty() ? View.GONE : View.VISIBLE);
+    }
+
     private void fillReasons(List<String> reasons, int dotColor) {
         reasonsList.removeAllViews();
         for (String reason : reasons) {
             LinearLayout row = new LinearLayout(this);
             row.setOrientation(LinearLayout.HORIZONTAL);
-            row.setPadding(0, dp(10), 0, dp(12));
+            row.setPadding(0, dp(8), 0, dp(10));
 
             View dot = new View(this);
             dot.setBackground(rounded(dotColor, 4));
@@ -280,7 +342,7 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
             TextView text = new TextView(this);
             text.setText(reason);
             text.setTextColor(getColor(R.color.ink));
-            text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
             text.setLineSpacing(0, 1.2f);
             text.setGravity(Gravity.START);
             row.addView(text, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
@@ -292,9 +354,6 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         }
     }
 
-    private boolean bodyBlockHasContent() {
-        return reasonsList.getChildCount() > 0;
-    }
 
     private void showFailed() {
         if (isFinishing()) {
@@ -372,31 +431,101 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("text/plain");
         share.putExtra(Intent.EXTRA_TEXT, message);
-        startActivity(Intent.createChooser(share, getString(R.string.share_title)));
+        Intent chooser = Intent.createChooser(share, getString(R.string.share_title));
+        // Não oferece o próprio URL Shield como destino do compartilhamento
+        chooser.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, new android.content.ComponentName[]{
+                new android.content.ComponentName(this, LinkCheckActivity.class)
+        });
+        startActivity(chooser);
     }
 
     private void speakResult() {
         if (currentResult == null) {
             return;
         }
-        if (!ttsReady) {
-            Toast.makeText(this, R.string.tts_starting, Toast.LENGTH_SHORT).show();
+        if (ttsFailed) {
+            showNoVoiceHelp();
+            return;
+        }
+        if (textToSpeech.isSpeaking()) {
+            textToSpeech.stop();
             return;
         }
         String speech = currentResult.speechText.isEmpty()
                 ? verdictTitle.getText() + ". " + verdictSubtitle.getText()
                 : currentResult.speechText;
-        textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, "urlshield-result");
+        if (!ttsReady) {
+            // O motor de voz ainda está iniciando: fala assim que ficar pronto
+            pendingSpeech = speech;
+            Toast.makeText(this, R.string.tts_starting, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        speak(speech);
+    }
+
+    private void speak(String speech) {
+        int result = textToSpeech.speak(speech, TextToSpeech.QUEUE_FLUSH, null, "urlshield-result");
+        Log.i(TAG, "TTS speak -> " + (result == TextToSpeech.SUCCESS ? "ok" : "erro " + result));
+        if (result != TextToSpeech.SUCCESS) {
+            showNoVoiceHelp();
+        }
     }
 
     @Override
     public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int languageResult = textToSpeech.setLanguage(new Locale("pt", "BR"));
-            textToSpeech.setSpeechRate(0.9f);
-            ttsReady = languageResult != TextToSpeech.LANG_MISSING_DATA
-                    && languageResult != TextToSpeech.LANG_NOT_SUPPORTED;
+        if (status != TextToSpeech.SUCCESS) {
+            Log.w(TAG, "TTS indisponível, status " + status);
+            ttsFailed = true;
+            return;
         }
+        // Prefere português do Brasil; sem ele, usa qualquer voz em português ou a padrão
+        Locale[] candidates = {new Locale("pt", "BR"), new Locale("pt"), Locale.getDefault()};
+        for (Locale locale : candidates) {
+            int availability = textToSpeech.setLanguage(locale);
+            if (availability != TextToSpeech.LANG_MISSING_DATA
+                    && availability != TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.i(TAG, "TTS pronto em " + locale);
+                break;
+            }
+        }
+        textToSpeech.setSpeechRate(0.9f);
+        textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+                Log.i(TAG, "TTS falando");
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                Log.i(TAG, "TTS terminou");
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+                Log.w(TAG, "TTS erro ao falar");
+            }
+        });
+        ttsReady = true;
+        if (pendingSpeech != null) {
+            speak(pendingSpeech);
+            pendingSpeech = null;
+        }
+    }
+
+    /** Sem motor de voz: leva às configurações para instalar uma voz. */
+    private void showNoVoiceHelp() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.no_voice_title)
+                .setMessage(R.string.no_voice_message)
+                .setNegativeButton(R.string.confirm_back, null)
+                .setPositiveButton(R.string.open_settings, (dialog, which) -> {
+                    try {
+                        startActivity(new Intent("com.android.settings.TTS_SETTINGS"));
+                    } catch (Exception ignored) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
+                    }
+                })
+                .show();
     }
 
     private GradientDrawable rounded(int color, int radiusDp) {

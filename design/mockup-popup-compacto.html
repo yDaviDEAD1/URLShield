@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>URL Shield — pop-up compacto</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F6F1E8; --card: #FFFDF8; --ink: #1E1B16; --ink-2: #4A4439; --ink-3: #7A715F; --line: #DCD2BF;
+    --safe: #2E6B4E; --safe-bg: #E3EFE6; --safe-ink: #10301F;
+    --warn: #A35F00; --warn-bg: #FBEBCB; --warn-ink: #3D2600;
+    --danger: #B3261E; --danger-ink: #FFF7F5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 2080px; background: #D9D2C4; font-family: 'Atkinson Hyperlegible', sans-serif; color: var(--ink); padding: 44px 56px 50px; }
+  h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 40px; }
+  .lead { font-size: 19px; color: var(--ink-2); margin: 8px 0 30px; max-width: 1200px; line-height: 1.45; }
+  .row { display: flex; gap: 34px; align-items: flex-start; }
+  .label { font-size: 15px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6B6253; margin-bottom: 10px; }
+  .label.before { color: #8C1D17; }
+
+  /* telefone em dp reais: 360 x 800, escala 1.25 */
+  .phone { width: 450px; height: 1000px; border-radius: 46px; background: #15130F; padding: 10px; box-shadow: 0 30px 60px -30px rgba(40,30,10,.5); }
+  .screen { width: 360px; height: 800px; transform: scale(1.194); transform-origin: top left; border-radius: 30px; overflow: hidden; position: relative; background: #ECE5DD; }
+  .phone.small { width: 300px; height: 667px; padding: 8px; border-radius: 34px; }
+  .phone.small .screen { transform: scale(0.789); border-radius: 30px; }
+
+  /* conversa de exemplo atrás do pop-up */
+  .status { height: 24px; background: #1F6F5C; color: #fff; font-size: 11px; display: flex; justify-content: space-between; padding: 5px 14px; }
+  .chat-head { height: 52px; background: #1F6F5C; color: #fff; display: flex; align-items: center; gap: 10px; padding: 0 12px; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: #CBB89A; }
+  .chat-head b { font-size: 16px; display: block; }
+  .chat-head span { font-size: 12px; opacity: .8; }
+  .msgs { padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; }
+  .bubble { max-width: 78%; background: #fff; border-radius: 8px; padding: 7px 9px; font-size: 14px; line-height: 1.35; box-shadow: 0 1px 0 rgba(0,0,0,.08); }
+  .bubble.me { align-self: flex-end; background: #D9FDD3; }
+  .bubble a { color: #1B6FB5; text-decoration: underline; word-break: break-all; }
+  .bubble small { display: block; text-align: right; font-size: 10px; color: #8a8a8a; margin-top: 2px; }
+
+  .scrim { position: absolute; inset: 0; background: rgba(30,27,22,.55); }
+  .sheet { position: absolute; left: 0; right: 0; bottom: 0; background: var(--paper); border-radius: 26px 26px 0 0; overflow: hidden; }
+  .head { padding: 18px 20px 18px; }
+  .title-row { display: flex; gap: 14px; align-items: center; }
+  .tile { flex: none; width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center; }
+  .head h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 27px; line-height: 1.05; }
+  .head p { font-size: 17px; line-height: 1.35; margin-top: 10px; }
+  .chip { display: inline-block; margin-top: 10px; font: 14px ui-monospace, Consolas, monospace; padding: 4px 9px; border-radius: 7px; }
+  .danger .head { background: var(--danger); color: var(--danger-ink); }
+  .danger .tile { background: rgba(255,255,255,.16); }
+  .danger .chip { background: rgba(0,0,0,.22); }
+  .warn .head { background: var(--warn-bg); color: var(--warn-ink); }
+  .warn .tile { background: var(--warn); }
+  .warn .chip { background: rgba(163,95,0,.14); }
+  .safe .head { background: var(--safe-bg); color: var(--safe-ink); }
+  .safe .tile { background: var(--safe); }
+  .safe .chip { background: rgba(46,107,78,.14); }
+
+  .body { padding: 12px 20px 0; }
+  .why { font-size: 11.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-3); }
+  .reason { display: flex; gap: 10px; font-size: 16px; line-height: 1.35; padding: 7px 0; border-bottom: 1px solid var(--line); }
+  .reason i { flex: none; width: 7px; height: 7px; border-radius: 50%; margin-top: 7px; }
+  .more { display: inline-block; font-size: 14.5px; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; padding: 8px 0 0; }
+
+  .actions { padding: 14px 20px 10px; display: flex; flex-direction: column; gap: 9px; }
+  .btn { height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 18px; }
+  .btn.ink { background: var(--ink); color: var(--paper); }
+  .btn.go { background: var(--safe); color: #fff; }
+  .row2 { display: flex; gap: 9px; }
+  .btn.sec { flex: 1; height: 46px; font-size: 16px; background: var(--card); border: 1.5px solid var(--ink); }
+  .escape { text-align: center; font-size: 14.5px; color: var(--ink-3); text-decoration: underline; text-underline-offset: 3px; padding: 4px 0 0; }
+  .navbar { height: 22px; display: grid; place-items: center; }
+  .navbar::after { content: ""; width: 108px; height: 4px; border-radius: 2px; background: #2a2a2a; opacity: .55; }
+
+  .before-img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 26px; }
+  .notes { margin-top: 30px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .note { background: var(--card); border-radius: 14px; padding: 16px 18px; font-size: 16px; line-height: 1.45; color: var(--ink-2); }
+  .note b { display: block; color: var(--ink); font-size: 17px; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="stop" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 2.5h7.6l5.7 5.7v7.6l-5.7 5.7H8.2l-5.7-5.7V8.2z"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/></g></symbol>
+    <symbol id="warn" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4.5M12 17h.01"/></g></symbol>
+    <symbol id="ok" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M7.5 12.5l3 3 6-6.5"/></g></symbol>
+    <symbol id="fam" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M3 19.5c0-3 2.5-5.2 5.5-5.2s5.5 2.2 5.5 5.2M14.5 14.6c3 .1 5.5 1.9 5.5 4.9"/></g></symbol>
+    <symbol id="spk" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/></g></symbol>
+    <symbol id="arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<h1>Pop-up compacto · tamanho proporcional ao risco</h1>
+<p class="lead">Ícone ao lado do título, só o motivo principal à mostra e ações mais enxutas. A conversa continua visível atrás: a pessoa entende que não saiu do WhatsApp. Proporções reais de um celular (360 × 800 dp), mesma escala do emulador.</p>
+
+<div class="row">
+  <div>
+    <div class="label before">Hoje · Não abra</div>
+    <div class="phone small"><div class="screen" style="transform:none;width:284px;height:651px"><img class="before-img" src="app-emulador/1-nao-abra.png"></div></div>
+  </div>
+
+  <!-- ===== NÃO ABRA ===== -->
+  <div>
+    <div class="label">Proposta · Não abra (~60%)</div>
+    <div class="phone"><div class="screen danger">
+      <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="chat-head"><div class="avatar"></div><div><b>Banco Caixa</b><span>online</span></div></div>
+      <div class="msgs">
+        <div class="bubble">Seu saque do FGTS está liberado! Confirme seus dados até hoje: <a>http://caixa-gov-fgts.top/saque</a><small>09:12</small></div>
+      </div>
+      <div class="scrim"></div>
+      <div class="sheet">
+        <div class="head">
+          <div class="title-row">
+            <div class="tile"><svg width="32" height="32"><use href="#stop"/></svg></div>
+            <h2>Não abra este link</h2>
+          </div>
+          <p>Ele está se passando por caixa.gov.br para enganar você.</p>
+          <span class="chip">caixa-gov-fgts.top</span>
+        </div>
+        <div class="body">
+          <div class="why">Por que</div>
+          <div class="reason"><i style="background:var(--danger)"></i>Usa o nome da Caixa, mas não é o site oficial.</div>
+          <div class="reason"><i style="background:var(--danger)"></i>O nome do site parece inventado às pressas.</div>
+          <span class="more">Ver todos os motivos (3)</span>
+        </div>
+        <div class="actions">
+          <div class="btn ink">Fechar e voltar</div>
+          <div class="row2">
+            <div class="btn sec"><svg width="20" height="20"><use href="#fam"/></svg>Família</div>
+            <div class="btn sec"><svg width="20" height="20"><use href="#spk"/></svg>Ouvir</div>
+          </div>
+          <div class="escape">Abrir mesmo assim</div>
+        </div>
+        <div class="navbar"></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ===== CUIDADO ===== -->
+  <div>
+    <div class="label">Proposta · Tenha cuidado (~48%)</div>
+    <div class="phone"><div class="screen warn">
+      <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="chat-head"><div class="avatar" style="background:#B7C4D9"></div><div><b>Marta (vizinha)</b><span>online</span></div></div>
+      <div class="msgs">
+        <div class="bubble">Bom dia! Olha que promoção boa que recebi 😍<small>08:40</small></div>
+        <div class="bubble">Corre que acaba hoje: <a>https://bit.ly/3abc</a><small>08:41</small></div>
+        <div class="bubble me">Vou ver!<small>08:52</small></div>
+      </div>
+      <div class="scrim"></div>
+      <div class="sheet">
+        <div class="head">
+          <div class="title-row">
+            <div class="tile"><svg width="32" height="32"><use href="#warn"/></svg></div>
+            <h2>Tenha cuidado</h2>
+          </div>
+          <p>Este link é encurtado. Ele esconde para onde vai levar você.</p>
+          <span class="chip">bit.ly</span>
+        </div>
+        <div class="actions">
+          <div class="btn ink">Fechar e voltar</div>
+          <div class="row2">
+            <div class="btn sec"><svg width="20" height="20"><use href="#fam"/></svg>Família</div>
+            <div class="btn sec"><svg width="20" height="20"><use href="#spk"/></svg>Ouvir</div>
+          </div>
+          <div class="escape">Abrir mesmo assim</div>
+        </div>
+        <div class="navbar"></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- ===== PODE ABRIR ===== -->
+  <div>
+    <div class="label">Proposta · Pode abrir (~38%)</div>
+    <div class="phone"><div class="screen safe">
+      <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+      <div class="chat-head"><div class="avatar" style="background:#C9D9B7"></div><div><b>Filho</b><span>online</span></div></div>
+      <div class="msgs">
+        <div class="bubble">Mãe, o boleto do cartão está no app do banco. Se preferir, entra por aqui: <a>https://www.itau.com.br</a><small>10:03</small></div>
+        <div class="bubble me">Obrigada, filho!<small>10:05</small></div>
+        <div class="bubble">Qualquer coisa me liga 😘<small>10:05</small></div>
+      </div>
+      <div class="scrim"></div>
+      <div class="sheet">
+        <div class="head">
+          <div class="title-row">
+            <div class="tile"><svg width="32" height="32"><use href="#ok"/></svg></div>
+            <h2>Pode abrir, com atenção</h2>
+          </div>
+          <p>Site oficial do Itaú. Não achamos sinais de golpe.</p>
+          <span class="chip">itau.com.br</span>
+        </div>
+        <div class="actions">
+          <div class="btn go">Abrir site <svg width="20" height="20"><use href="#arr"/></svg></div>
+          <div class="row2">
+            <div class="btn sec"><svg width="20" height="20"><use href="#fam"/></svg>Família</div>
+            <div class="btn sec"><svg width="20" height="20"><use href="#spk"/></svg>Ouvir</div>
+          </div>
+        </div>
+        <div class="navbar"></div>
+      </div>
+    </div></div>
+  </div>
+</div>
+
+<div class="notes">
+  <div class="note"><b>A conversa continua à vista</b>A pessoa vê que ainda está no WhatsApp: o pop-up é uma pausa, não outra tela.</div>
+  <div class="note"><b>Tamanho = gravidade</b>Quanto maior o risco, mais o cartão sobe. O caso seguro, que é o mais comum, quase não atrapalha.</div>
+  <div class="note"><b>Letra continua grande</b>Título 27sp, texto 16–17sp, botões de 46–54dp: dentro do recomendado para idosos.</div>
+  <div class="note"><b>Nada se perde</b>Os outros motivos ficam a um toque em “Ver todos os motivos”.</div>
+</div>
+</body>
+</html>

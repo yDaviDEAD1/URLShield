@@ -29,9 +29,8 @@
     <string name="title_warn">Tenha cuidado</string>
     <string name="title_allow">Pode abrir, com atenção</string>
     <string name="label_why">Por que</string>
-    <string name="label_remember">Lembre sempre</string>
-    <string name="tip_bank">Nenhum banco pede sua senha por mensagem.</string>
-    <string name="tip_hurry">Se pedirem dinheiro com pressa, desconfie.</string>
+    <string name="see_reasons">Ver os motivos (%1$d)</string>
+    <string name="see_all_reasons">Ver todos os motivos (%1$d)</string>
     <string name="open_site">Abrir site</string>
     <string name="close_and_return">Fechar e voltar</string>
     <string name="ask_family">Família</string>
@@ -46,5 +45,7 @@
     <string name="failed_summary">Por segurança, não abrimos este link. Tente de novo mais tarde ou peça ajuda a alguém da família.</string>
     <string name="no_browser">Não encontramos outro navegador para abrir o site. Instale o Google Chrome.</string>
     <string name="tts_starting">A leitura em voz alta ainda está iniciando.</string>
+    <string name="no_voice_title">Sem voz no celular</string>
+    <string name="no_voice_message">Este celular não tem um leitor de voz ativo. Nas configurações, escolha um mecanismo de voz (por exemplo, Google) e baixe o português.</string>
     <string name="share_title">Pedir ajuda usando</string>
 </resources>
