@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>URL Shield — proposta de redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F6F1E8;
+    --paper-2: #EDE5D6;
+    --card: #FFFDF8;
+    --ink: #1E1B16;
+    --ink-2: #4A4439;
+    --line: #DCD2BF;
+    --safe: #2E6B4E;
+    --safe-bg: #E3EFE6;
+    --warn: #A35F00;
+    --warn-bg: #FBEBCB;
+    --danger: #B3261E;
+    --danger-deep: #8C1D17;
+    --danger-bg: #FBE3DF;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 2080px; background: #D9D2C4; font-family: var(--sans); color: var(--ink); padding: 56px 64px 64px; }
+
+  /* ---------- prancha ---------- */
+  .board-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+  .board-head h1 { font-family: var(--serif); font-size: 46px; font-weight: 600; letter-spacing: -0.5px; }
+  .board-head p { font-size: 20px; color: var(--ink-2); margin-top: 8px; max-width: 760px; }
+  .swatches { display: flex; gap: 14px; align-items: flex-end; }
+  .sw { width: 92px; }
+  .sw i { display: block; height: 56px; border-radius: 10px; border: 1px solid rgba(0,0,0,.08); }
+  .sw span { display: block; font-size: 13px; margin-top: 6px; color: var(--ink-2); }
+  .type-spec { margin-left: 26px; padding-left: 26px; border-left: 1px solid #BDB4A3; }
+  .type-spec b { font-family: var(--serif); font-size: 34px; font-weight: 600; display: block; line-height: 1; }
+  .type-spec span { font-size: 15px; color: var(--ink-2); }
+
+  .grid { display: grid; grid-template-columns: 1010px 1fr; gap: 48px; }
+  .col { display: flex; flex-direction: column; gap: 40px; }
+  .label { font-size: 15px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6B6253; margin-bottom: 12px; }
+
+  /* ---------- janela do navegador ---------- */
+  .browser { background: var(--paper); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(40,30,10,.45), 0 0 0 1px rgba(0,0,0,.06); }
+  .chrome { height: 40px; background: #E6DFD2; display: flex; align-items: center; gap: 8px; padding: 0 16px; }
+  .chrome i { width: 12px; height: 12px; border-radius: 50%; background: #CBC1AE; }
+  .chrome .url { margin-left: 18px; flex: 1; height: 24px; background: #F4EFE6; border-radius: 6px; font-size: 13px; color: #7A715F; display: flex; align-items: center; padding-left: 12px; }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 22px 44px; border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 12px; font-family: var(--serif); font-size: 24px; font-weight: 600; }
+  .nav-tools { display: flex; gap: 10px; align-items: center; font-size: 16px; }
+  .chip { border: 1.5px solid var(--line); border-radius: 999px; padding: 8px 16px; display: flex; gap: 8px; align-items: center; background: var(--card); }
+  .chip.text { border: none; background: none; text-decoration: underline; text-underline-offset: 4px; color: var(--ink-2); }
+
+  /* home */
+  .home { padding: 58px 44px 50px; display: grid; grid-template-columns: 1fr 300px; gap: 36px; }
+  .eyebrow { font-size: 18px; font-weight: 700; color: var(--danger); margin-bottom: 14px; display: flex; gap: 8px; align-items: center; }
+  .home h2 { font-family: var(--serif); font-size: 58px; line-height: 1.04; font-weight: 600; letter-spacing: -1px; }
+  .home h2 em { font-style: italic; font-weight: 500; }
+  .home .lead { font-size: 21px; line-height: 1.5; color: var(--ink-2); margin: 18px 0 30px; max-width: 560px; }
+  .checker { background: var(--card); border: 2px solid var(--ink); border-radius: 18px; padding: 14px; box-shadow: 6px 6px 0 var(--ink); }
+  .checker .field { font-size: 22px; color: #8B826F; padding: 16px 14px 18px; border-bottom: 1.5px dashed var(--line); }
+  .checker .row { display: flex; gap: 10px; padding-top: 14px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--sans); font-weight: 700; font-size: 19px; border-radius: 12px; padding: 0 20px; height: 58px; border: 2px solid var(--ink); background: var(--card); color: var(--ink); white-space: nowrap; }
+  .btn.primary { background: var(--ink); color: var(--paper); flex: 1; font-size: 21px; }
+  .steps { background: var(--paper-2); border-radius: 18px; padding: 26px; align-self: start; margin-top: 8px; }
+  .steps h3 { font-family: var(--serif); font-size: 24px; font-weight: 600; margin-bottom: 18px; }
+  .step { display: flex; gap: 14px; margin-bottom: 18px; font-size: 18px; line-height: 1.4; }
+  .step b { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--ink); color: var(--paper); display: grid; place-items: center; font-size: 17px; }
+  .trust { display: flex; gap: 22px; margin-top: 26px; font-size: 16px; color: var(--ink-2); }
+  .trust span { display: flex; gap: 8px; align-items: center; }
+
+  /* resultado no site */
+  .verdict { background: var(--danger); color: #FFF7F5; padding: 40px 44px 36px; display: flex; gap: 28px; align-items: flex-start; }
+  .verdict .big-icon { flex: none; width: 92px; height: 92px; border-radius: 24px; background: rgba(255,255,255,.14); display: grid; place-items: center; }
+  .verdict h2 { font-family: var(--serif); font-size: 54px; font-weight: 600; line-height: 1; letter-spacing: -0.8px; }
+  .verdict p { font-size: 22px; margin-top: 12px; line-height: 1.4; }
+  .domain { display: inline-flex; gap: 8px; align-items: center; margin-top: 16px; background: rgba(0,0,0,.2); border-radius: 8px; padding: 7px 12px; font-size: 18px; font-family: ui-monospace, Consolas, monospace; }
+  .result-body { padding: 34px 44px 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+  .result-body h3 { font-family: var(--serif); font-size: 26px; font-weight: 600; margin-bottom: 16px; }
+  .todo { list-style: none; }
+  .todo li { display: flex; gap: 14px; font-size: 19px; line-height: 1.4; margin-bottom: 14px; }
+  .todo li b { flex: none; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--danger); color: var(--danger); display: grid; place-items: center; font-size: 16px; }
+  .why { list-style: none; }
+  .why li { background: var(--card); border: 1.5px solid var(--line); border-left: 5px solid var(--danger); border-radius: 10px; padding: 13px 16px; font-size: 18px; line-height: 1.4; margin-bottom: 10px; }
+  .why li small { display: block; color: #7A715F; font-size: 15px; margin-top: 3px; }
+  .actions { display: flex; gap: 12px; margin-top: 20px; }
+  .result-foot { border-top: 1px solid var(--line); margin: 0 44px; padding: 18px 0 24px; display: flex; justify-content: space-between; font-size: 17px; color: var(--ink-2); }
+  .result-foot a { color: var(--ink-2); text-underline-offset: 4px; }
+
+  /* ---------- celulares ---------- */
+  .phones { display: flex; gap: 22px; }
+  .phone-wrap { flex: 1; min-width: 0; }
+  .phone { width: 100%; height: 1010px; border-radius: 46px; background: #15130F; padding: 12px; box-shadow: 0 30px 60px -30px rgba(40,30,10,.55); }
+  .screen { height: 100%; border-radius: 36px; overflow: hidden; background: var(--paper); display: flex; flex-direction: column; }
+  .status-bar { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 26px; font-size: 15px; font-weight: 700; }
+  .p-top { padding: 26px 26px 34px; display: flex; flex-direction: column; gap: 14px; }
+  .p-top .p-icon { width: 96px; height: 96px; border-radius: 28px; display: grid; place-items: center; margin-bottom: 8px; }
+  .p-top h2 { font-family: var(--serif); font-size: 44px; font-weight: 600; line-height: 1.02; letter-spacing: -0.6px; }
+  .p-top p { font-size: 21px; line-height: 1.4; }
+  .p-top .domain { margin-top: 2px; font-size: 17px; }
+  .danger .p-top, .danger .status-bar { background: var(--danger); color: #FFF7F5; }
+  .warn .p-top, .warn .status-bar { background: var(--warn-bg); color: #3D2600; }
+  .warn .p-top .domain { background: rgba(163,95,0,.14); }
+  .safe .p-top, .safe .status-bar { background: var(--safe-bg); color: #10301F; }
+  .safe .p-top .domain { background: rgba(46,107,78,.14); }
+  .danger .p-icon { background: rgba(255,255,255,.16); }
+  .warn .p-icon { background: var(--warn); }
+  .safe .p-icon { background: var(--safe); }
+  .p-body { flex: 1; padding: 24px 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+  .p-body h4 { font-size: 16px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #7A715F; margin-bottom: 2px; }
+  .reason { display: flex; gap: 12px; font-size: 19px; line-height: 1.38; padding: 4px 0 10px; border-bottom: 1px solid var(--line); }
+  .reason svg { flex: none; margin-top: 3px; }
+  .p-actions { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+  .p-actions .btn { flex: none; width: 100%; height: 66px; font-size: 21px; border-radius: 16px; }
+  .p-actions .btn.primary.go { background: var(--safe); border-color: var(--safe); color: #fff; }
+  .row2 { display: flex; gap: 10px; }
+  .row2 .btn { flex: 1; height: 60px; font-size: 18px; padding: 0 10px; }
+  .escape { text-align: center; font-size: 17px; color: #7A715F; text-decoration: underline; text-underline-offset: 4px; padding: 8px 0 4px; }
+  .offline-note { font-size: 15px; color: #7A715F; display: flex; gap: 8px; align-items: center; }
+
+  .notes { margin-top: 36px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .note { background: var(--card); border-radius: 14px; padding: 20px 22px; font-size: 17px; line-height: 1.45; color: var(--ink-2); }
+  .note b { display: block; color: var(--ink); font-size: 18px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="logo" viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#1E1B16"/><path d="M15.5 22.5a5 5 0 0 1 0-7.07l3-3a5 5 0 0 1 7.07 7.07l-1.3 1.3" fill="none" stroke="#F6F1E8" stroke-width="2.6" stroke-linecap="round"/><path d="M14 26.5l4.2 4.2L28 21" fill="none" stroke="#7FC29B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></g></symbol>
+    <symbol id="i-paste" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h4"/></g></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 2.5h7.6l5.7 5.7v7.6l-5.7 5.7H8.2l-5.7-5.7V8.2z"/><path d="M8.5 8.5l7 7M15.5 8.5l-7 7"/></g></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4.5M12 17h.01"/></g></symbol>
+    <symbol id="i-ok" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M7.5 12.5l3 3 6-6.5"/></g></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/></g></symbol>
+    <symbol id="i-family" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M3 19.5c0-3 2.5-5.2 5.5-5.2s5.5 2.2 5.5 5.2M14.5 14.6c3 .1 5.5 1.9 5.5 4.9"/></g></symbol>
+    <symbol id="i-dot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="currentColor"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></g></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></g></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 18L9 5l5 13M5.8 13.5h6.4M15 18l3-7.5 3 7.5M15.9 16h4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="board-head">
+  <div>
+    <h1>URL Shield · proposta de redesign</h1>
+    <p>Direção: “um amigo de confiança que confere o link para você”. Papel quente em vez de painel de cibersegurança, veredito em tela cheia, linguagem de gente.</p>
+  </div>
+  <div class="swatches">
+    <div class="sw"><i style="background:#F6F1E8"></i><span>Papel</span></div>
+    <div class="sw"><i style="background:#1E1B16"></i><span>Tinta</span></div>
+    <div class="sw"><i style="background:#2E6B4E"></i><span>Pode abrir</span></div>
+    <div class="sw"><i style="background:#A35F00"></i><span>Cuidado</span></div>
+    <div class="sw"><i style="background:#B3261E"></i><span>Não abra</span></div>
+    <div class="type-spec"><b>Fraunces</b><span>títulos, com calor humano</span></div>
+    <div class="type-spec"><b style="font-family:var(--sans);font-weight:700">Atkinson</b><span>Hyperlegible: feita para baixa visão</span></div>
+  </div>
+</header>
+
+<div class="grid">
+  <!-- ================= SITE ================= -->
+  <div class="col">
+    <section>
+      <div class="label">Site · tela inicial</div>
+      <div class="browser">
+        <div class="chrome"><i></i><i></i><i></i><div class="url">urlshield-api-x9et.onrender.com</div></div>
+        <nav class="nav">
+          <div class="brand"><svg width="38" height="38"><use href="#logo"/></svg>URL Shield</div>
+          <div class="nav-tools">
+            <span class="chip"><svg width="20" height="20"><use href="#i-text"/></svg>Letra maior</span>
+            <span class="chip">◐ Alto contraste</span>
+            <span class="chip text">Área técnica</span>
+          </div>
+        </nav>
+        <div class="home">
+          <div>
+            <div class="eyebrow"><svg width="20" height="20"><use href="#i-warn"/></svg>Recebeu um link estranho?</div>
+            <h2>Antes de clicar, <em>deixa a gente</em> conferir.</h2>
+            <p class="lead">Cole o link que chegou por WhatsApp, SMS ou e-mail. Em poucos segundos dizemos se ele é seguro, sem abrir o site.</p>
+            <div class="checker">
+              <div class="field">Cole aqui o link que você recebeu</div>
+              <div class="row">
+                <span class="btn"><svg width="22" height="22"><use href="#i-paste"/></svg>Colar</span>
+                <span class="btn"><svg width="22" height="22"><use href="#i-mic"/></svg>Falar o link</span>
+                <span class="btn primary">Conferir link <svg width="22" height="22"><use href="#i-arrow"/></svg></span>
+              </div>
+            </div>
+            <div class="trust">
+              <span><svg width="18" height="18"><use href="#i-lock"/></svg>Não abrimos o site durante a análise</span>
+              <span><svg width="18" height="18"><use href="#i-phone"/></svg>Também tem app para celular</span>
+            </div>
+          </div>
+          <aside class="steps">
+            <h3>Como usar</h3>
+            <div class="step"><b>1</b>Na mensagem, toque e segure no link e escolha “Copiar”.</div>
+            <div class="step"><b>2</b>Volte aqui e toque em “Colar”.</div>
+            <div class="step"><b>3</b>Toque em “Conferir link” e veja a resposta.</div>
+            <div class="step" style="margin:0"><b>?</b>Na dúvida, mande para alguém da família pelo botão de ajuda.</div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="label">Site · resultado “Não abra”</div>
+      <div class="browser">
+        <div class="chrome"><i></i><i></i><i></i><div class="url">urlshield-api-x9et.onrender.com</div></div>
+        <div class="verdict">
+          <div class="big-icon"><svg width="58" height="58"><use href="#i-stop"/></svg></div>
+          <div>
+            <h2>Não abra este link.</h2>
+            <p>Ele está fingindo ser a Caixa Econômica Federal para roubar seus dados.</p>
+            <span class="domain">caixa-gov-fgts.top</span>
+          </div>
+        </div>
+        <div class="result-body">
+          <div>
+            <h3>O que fazer agora</h3>
+            <ol class="todo">
+              <li><b>1</b>Não toque no link e não digite senha, CPF ou código.</li>
+              <li><b>2</b>Apague a mensagem que você recebeu.</li>
+              <li><b>3</b>A Caixa não pede dados por mensagem. Na dúvida, ligue para o número do seu cartão.</li>
+            </ol>
+            <div class="actions">
+              <span class="btn primary" style="flex:none"><svg width="22" height="22"><use href="#i-family"/></svg>Mandar para a família</span>
+              <span class="btn"><svg width="22" height="22"><use href="#i-speaker"/></svg>Ouvir</span>
+            </div>
+          </div>
+          <div>
+            <h3>Por que achamos isso</h3>
+            <ul class="why">
+              <li>Usa o nome da Caixa, mas não é o site da Caixa.<small>O endereço oficial é caixa.gov.br</small></li>
+              <li>O nome do site parece inventado às pressas.<small>Combinação de letras típica de sites de golpe</small></li>
+              <li>O site não tem o cadeado de conexão segura.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="result-foot">
+          <a>Ver detalhes técnicos da análise ›</a>
+          <a>Gerar laudo em PDF</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ================= APP ================= -->
+  <div>
+    <div class="phones">
+      <div class="phone-wrap">
+        <div class="label">App · link perigoso</div>
+        <div class="phone"><div class="screen danger">
+          <div class="status-bar"><span>9:41</span><span>●●● ▮</span></div>
+          <div class="p-top">
+            <div class="p-icon"><svg width="60" height="60"><use href="#i-stop"/></svg></div>
+            <h2>Não abra este link</h2>
+            <p>Ele está fingindo ser a Caixa para roubar seus dados.</p>
+            <span class="domain">caixa-gov-fgts.top</span>
+          </div>
+          <div class="p-body">
+            <h4>Por que</h4>
+            <div class="reason"><svg width="20" height="20" style="color:var(--danger)"><use href="#i-dot"/></svg>Usa o nome da Caixa, mas o endereço não é da Caixa.</div>
+            <div class="reason"><svg width="20" height="20" style="color:var(--danger)"><use href="#i-dot"/></svg>Não tem o cadeado de conexão segura.</div>
+            <div class="p-actions">
+              <span class="btn primary">Fechar e voltar</span>
+              <div class="row2">
+                <span class="btn"><svg width="22" height="22"><use href="#i-family"/></svg>Família</span>
+                <span class="btn"><svg width="22" height="22"><use href="#i-speaker"/></svg>Ouvir</span>
+              </div>
+              <span class="escape">Abrir mesmo assim</span>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="label">App · cuidado</div>
+        <div class="phone"><div class="screen warn">
+          <div class="status-bar"><span>9:41</span><span>●●● ▮</span></div>
+          <div class="p-top">
+            <div class="p-icon" style="color:#fff"><svg width="58" height="58"><use href="#i-warn"/></svg></div>
+            <h2>Tenha cuidado</h2>
+            <p>Este é um link encurtado. Ele esconde para onde vai levar você.</p>
+            <span class="domain">bit.ly/3abc</span>
+          </div>
+          <div class="p-body">
+            <h4>Antes de abrir</h4>
+            <div class="reason"><svg width="20" height="20" style="color:var(--warn)"><use href="#i-dot"/></svg>Só abra se você esperava receber este link.</div>
+            <div class="reason"><svg width="20" height="20" style="color:var(--warn)"><use href="#i-dot"/></svg>Não digite senha nem dados do banco nele.</div>
+            <div class="p-actions">
+              <span class="btn primary">Fechar e voltar</span>
+              <div class="row2">
+                <span class="btn"><svg width="22" height="22"><use href="#i-family"/></svg>Família</span>
+                <span class="btn"><svg width="22" height="22"><use href="#i-speaker"/></svg>Ouvir</span>
+              </div>
+              <span class="escape">Abrir mesmo assim</span>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="label">App · pode abrir</div>
+        <div class="phone"><div class="screen safe">
+          <div class="status-bar"><span>9:41</span><span>●●● ▮</span></div>
+          <div class="p-top">
+            <div class="p-icon" style="color:#fff"><svg width="60" height="60"><use href="#i-ok"/></svg></div>
+            <h2>Pode abrir, com atenção</h2>
+            <p>Este é o site oficial do Itaú. Não achamos sinais de golpe.</p>
+            <span class="domain">itau.com.br</span>
+          </div>
+          <div class="p-body">
+            <h4>Lembre sempre</h4>
+            <div class="reason"><svg width="20" height="20" style="color:var(--safe)"><use href="#i-dot"/></svg>Nenhum banco pede sua senha por mensagem.</div>
+            <div class="reason"><svg width="20" height="20" style="color:var(--safe)"><use href="#i-dot"/></svg>Se pedirem dinheiro com pressa, desconfie.</div>
+            <div class="p-actions">
+              <span class="btn primary go">Abrir site <svg width="22" height="22"><use href="#i-arrow"/></svg></span>
+              <div class="row2">
+                <span class="btn"><svg width="22" height="22"><use href="#i-family"/></svg>Família</span>
+                <span class="btn"><svg width="22" height="22"><use href="#i-speaker"/></svg>Ouvir</span>
+              </div>
+              <span class="offline-note"><svg width="16" height="16"><use href="#i-phone"/></svg>Conferido no celular · servidor indisponível</span>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>Veredito antes de tudo</b>A cor ocupa a tela inteira: dá para entender sem ler.</div>
+      <div class="note"><b>Sem porcentagem</b>“70%” confunde. O número vai para a área técnica e o laudo.</div>
+      <div class="note"><b>Fuga discreta</b>“Abrir mesmo assim” vira link de texto, não um botão.</div>
+      <div class="note"><b>Ícones desenhados</b>SVG próprio no lugar de emoji: igual em qualquer celular.</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

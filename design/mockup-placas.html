@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>URL Shield — conceito placas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --asphalt: #1D1F22;
+    --asphalt-2: #2A2D31;
+    --page: #F3F3F0;
+    --card: #FFFFFF;
+    --ink: #17181A;
+    --ink-2: #4B4E53;
+    --line: #D6D6D0;
+    --stop: #C8102E;
+    --sign-yellow: #F5C400;
+    --sign-green: #0A6B3B;
+    --cond: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --sans: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 2080px; background: #CFCFC9; font-family: var(--sans); color: var(--ink); padding: 56px 64px 64px; }
+
+  .board-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+  .board-head h1 { font-family: var(--cond); font-size: 54px; font-weight: 800; letter-spacing: .2px; text-transform: uppercase; line-height: 1; }
+  .board-head p { font-size: 20px; color: var(--ink-2); margin-top: 12px; max-width: 800px; line-height: 1.45; }
+  .swatches { display: flex; gap: 14px; align-items: flex-end; }
+  .sw { width: 92px; }
+  .sw i { display: block; height: 56px; border-radius: 8px; border: 1px solid rgba(0,0,0,.1); }
+  .sw span { display: block; font-size: 13px; margin-top: 6px; color: var(--ink-2); }
+  .type-spec { margin-left: 26px; padding-left: 26px; border-left: 1px solid #A9A9A2; }
+  .type-spec b { font-family: var(--cond); font-size: 38px; font-weight: 800; display: block; line-height: 1; text-transform: uppercase; }
+  .type-spec span { font-size: 15px; color: var(--ink-2); }
+
+  .grid { display: grid; grid-template-columns: 1010px 1fr; gap: 48px; }
+  .col { display: flex; flex-direction: column; gap: 40px; }
+  .label { font-size: 15px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #5D5F5A; margin-bottom: 12px; }
+
+  .browser { background: var(--page); border-radius: 12px; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45), 0 0 0 1px rgba(0,0,0,.08); }
+  .chrome { height: 40px; background: #E2E2DD; display: flex; align-items: center; gap: 8px; padding: 0 16px; }
+  .chrome i { width: 12px; height: 12px; border-radius: 50%; background: #BDBDB6; }
+  .chrome .url { margin-left: 18px; flex: 1; height: 24px; background: #F5F5F2; border-radius: 6px; font-size: 13px; color: #6E706B; display: flex; align-items: center; padding-left: 12px; }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 44px; background: var(--card); border-bottom: 2px solid var(--ink); }
+  .brand { display: flex; align-items: center; gap: 12px; font-family: var(--cond); font-size: 30px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
+  .nav-tools { display: flex; gap: 10px; align-items: center; font-size: 16px; }
+  .chip { border: 2px solid var(--ink); border-radius: 8px; padding: 7px 14px; display: flex; gap: 8px; align-items: center; background: var(--card); font-weight: 700; }
+  .chip.text { border: none; text-decoration: underline; text-underline-offset: 4px; color: var(--ink-2); font-weight: 400; }
+
+  .home { padding: 52px 44px 46px; }
+  .home h2 { font-family: var(--cond); font-size: 76px; line-height: .95; font-weight: 800; text-transform: uppercase; letter-spacing: -.5px; }
+  .home h2 span { color: var(--stop); }
+  .home .lead { font-size: 21px; line-height: 1.5; color: var(--ink-2); margin: 18px 0 26px; max-width: 640px; }
+  .checker { display: flex; gap: 10px; align-items: stretch; }
+  .field { flex: 1; background: var(--card); border: 3px solid var(--ink); border-radius: 10px; font-size: 22px; color: #85877F; display: flex; align-items: center; padding: 0 18px; height: 66px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--sans); font-weight: 700; font-size: 19px; border-radius: 10px; padding: 0 18px; height: 66px; border: 3px solid var(--ink); background: var(--card); color: var(--ink); white-space: nowrap; }
+  .btn.primary { background: var(--ink); color: #fff; font-size: 21px; }
+  .btn.go { background: var(--sign-green); border-color: var(--sign-green); color: #fff; }
+  .legend { margin-top: 34px; border-top: 2px solid var(--ink); padding-top: 22px; }
+  .legend h3 { font-family: var(--cond); font-size: 26px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 16px; }
+  .legend-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .legend-item { display: flex; gap: 14px; align-items: center; font-size: 18px; line-height: 1.35; }
+  .legend-item b { display: block; font-family: var(--cond); font-size: 24px; text-transform: uppercase; }
+
+  /* resultado site */
+  .verdict { background: var(--asphalt); color: #fff; padding: 38px 44px; display: flex; gap: 36px; align-items: center; position: relative; }
+  .verdict::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: repeating-linear-gradient(90deg, var(--sign-yellow) 0 54px, transparent 54px 92px); }
+  .verdict h2 { font-family: var(--cond); font-size: 72px; font-weight: 800; line-height: .95; text-transform: uppercase; }
+  .verdict p { font-size: 22px; margin-top: 12px; line-height: 1.4; color: #E4E4E0; }
+  .domain { display: inline-flex; margin-top: 16px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25); border-radius: 6px; padding: 7px 12px; font-size: 18px; font-family: ui-monospace, Consolas, monospace; }
+  .result-body { padding: 34px 44px 26px; display: grid; grid-template-columns: 1fr 1fr; gap: 34px; }
+  .result-body h3 { font-family: var(--cond); font-size: 30px; font-weight: 800; text-transform: uppercase; margin-bottom: 14px; }
+  .todo { list-style: none; }
+  .todo li { display: flex; gap: 14px; font-size: 19px; line-height: 1.4; margin-bottom: 14px; }
+  .todo li b { flex: none; width: 34px; height: 34px; border-radius: 6px; background: var(--ink); color: #fff; display: grid; place-items: center; font-family: var(--cond); font-size: 22px; }
+  .why { list-style: none; }
+  .why li { background: var(--card); border: 2px solid var(--ink); border-radius: 8px; padding: 12px 16px; font-size: 18px; line-height: 1.4; margin-bottom: 10px; display: flex; gap: 12px; }
+  .why li small { display: block; color: #6E706B; font-size: 15px; margin-top: 2px; }
+  .actions { display: flex; gap: 12px; margin-top: 20px; }
+  .result-foot { border-top: 2px solid var(--ink); margin: 0 44px; padding: 16px 0 22px; display: flex; justify-content: space-between; font-size: 17px; color: var(--ink-2); }
+  .result-foot a { color: var(--ink-2); text-underline-offset: 4px; text-decoration: underline; }
+
+  /* celulares */
+  .phones { display: flex; gap: 22px; }
+  .phone-wrap { flex: 1; min-width: 0; }
+  .phone { width: 100%; height: 1010px; border-radius: 46px; background: #0E0F10; padding: 12px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.6); }
+  .screen { height: 100%; border-radius: 36px; overflow: hidden; background: var(--page); display: flex; flex-direction: column; }
+  .p-top { background: var(--asphalt); color: #fff; padding: 12px 22px 34px; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; position: relative; }
+  .p-top::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 5px; background: repeating-linear-gradient(90deg, var(--sign-yellow) 0 34px, transparent 34px 58px); }
+  .status-bar { width: 100%; display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; padding: 6px 6px 14px; }
+  .p-top .sign { align-self: center; margin-bottom: 6px; }
+  .p-top h2 { font-family: var(--cond); font-size: 46px; font-weight: 800; line-height: .95; text-transform: uppercase; }
+  .p-top p { font-size: 20px; line-height: 1.38; color: #E4E4E0; }
+  .p-top .domain { margin-top: 0; font-size: 16px; }
+  .p-body { flex: 1; padding: 22px 22px 22px; display: flex; flex-direction: column; gap: 10px; }
+  .p-body h4 { font-family: var(--cond); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: .4px; }
+  .reason { display: flex; gap: 12px; font-size: 19px; line-height: 1.36; padding: 2px 0 10px; border-bottom: 1px solid var(--line); }
+  .reason i { flex: none; width: 10px; height: 10px; margin-top: 8px; transform: rotate(45deg); background: var(--ink); }
+  .p-actions { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
+  .p-actions .btn { flex: none; width: 100%; height: 66px; font-size: 21px; border-radius: 12px; }
+  .row2 { display: flex; gap: 10px; }
+  .row2 .btn { flex: 1; height: 60px; font-size: 18px; padding: 0 10px; }
+  .escape { text-align: center; font-size: 17px; color: #6E706B; text-decoration: underline; text-underline-offset: 4px; padding: 6px 0 2px; }
+  .offline-note { font-size: 15px; color: #6E706B; text-align: center; }
+
+  .notes { margin-top: 36px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .note { background: var(--card); border: 2px solid var(--ink); border-radius: 10px; padding: 18px 22px; font-size: 17px; line-height: 1.45; color: var(--ink-2); }
+  .note b { display: block; color: var(--ink); font-family: var(--cond); font-size: 24px; text-transform: uppercase; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <!-- PARE: octógono de regulamentação -->
+    <symbol id="sign-stop" viewBox="0 0 100 100">
+      <polygon points="29.3,0 70.7,0 100,29.3 100,70.7 70.7,100 29.3,100 0,70.7 0,29.3" fill="#fff"/>
+      <polygon points="30.5,3 69.5,3 97,30.5 97,69.5 69.5,97 30.5,97 3,69.5 3,30.5" fill="#C8102E"/>
+      <polygon points="32.3,7.5 67.7,7.5 92.5,32.3 92.5,67.7 67.7,92.5 32.3,92.5 7.5,67.7 7.5,32.3" fill="none" stroke="#fff" stroke-width="2.2"/>
+      <text x="50" y="61" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-weight="800" font-size="31" fill="#fff" letter-spacing=".5">PARE</text>
+    </symbol>
+    <!-- ATENÇÃO: losango de advertência -->
+    <symbol id="sign-warn" viewBox="0 0 100 100">
+      <rect x="17" y="17" width="66" height="66" rx="6" transform="rotate(45 50 50)" fill="#17181A"/>
+      <rect x="20.5" y="20.5" width="59" height="59" rx="4" transform="rotate(45 50 50)" fill="#F5C400"/>
+      <rect x="24" y="24" width="52" height="52" rx="3" transform="rotate(45 50 50)" fill="none" stroke="#17181A" stroke-width="2"/>
+      <rect x="46.2" y="27" width="7.6" height="31" rx="3" fill="#17181A"/>
+      <circle cx="50" cy="68" r="4.6" fill="#17181A"/>
+    </symbol>
+    <!-- Indicação: placa verde de rodovia -->
+    <symbol id="sign-go" viewBox="0 0 160 100">
+      <rect width="160" height="100" rx="9" fill="#fff"/>
+      <rect x="3" y="3" width="154" height="94" rx="7" fill="#0A6B3B"/>
+      <rect x="7.5" y="7.5" width="145" height="85" rx="5" fill="none" stroke="#fff" stroke-width="2.2"/>
+      <path d="M118 66V34M106 46l12-12 12 12" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="logo" viewBox="0 0 40 40">
+      <polygon points="11.7,0 28.3,0 40,11.7 40,28.3 28.3,40 11.7,40 0,28.3 0,11.7" fill="#17181A"/>
+      <path d="M13 20.5l5 5L28 14.5" fill="none" stroke="#F5C400" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></g></symbol>
+    <symbol id="i-paste" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h4"/></g></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-speaker" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18.2 6.5a8 8 0 0 1 0 11"/></g></symbol>
+    <symbol id="i-family" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M3 19.5c0-3 2.5-5.2 5.5-5.2s5.5 2.2 5.5 5.2M14.5 14.6c3 .1 5.5 1.9 5.5 4.9"/></g></symbol>
+    <symbol id="i-text" viewBox="0 0 24 24"><path d="M4 18L9 5l5 13M5.8 13.5h6.4M15 18l3-7.5 3 7.5M15.9 16h4.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="board-head">
+  <div>
+    <h1>URL Shield · conceito placas de trânsito</h1>
+    <p>A resposta usa um código que a pessoa já sabe ler há décadas: PARE, ATENÇÃO e a placa verde que mostra para onde o link leva. Cor e forma dizem tudo antes da primeira palavra.</p>
+  </div>
+  <div class="swatches">
+    <div class="sw"><i style="background:#1D1F22"></i><span>Asfalto</span></div>
+    <div class="sw"><i style="background:#F3F3F0"></i><span>Concreto</span></div>
+    <div class="sw"><i style="background:#C8102E"></i><span>Pare</span></div>
+    <div class="sw"><i style="background:#F5C400"></i><span>Atenção</span></div>
+    <div class="sw"><i style="background:#0A6B3B"></i><span>Indicação</span></div>
+    <div class="type-spec"><b>Barlow Cond.</b><span>desenhada a partir de placas</span></div>
+    <div class="type-spec"><b style="font-family:var(--sans);font-weight:700;text-transform:none;font-size:34px">Atkinson</b><span>Hyperlegible: texto corrido</span></div>
+  </div>
+</header>
+
+<div class="grid">
+  <div class="col">
+    <section>
+      <div class="label">Site · tela inicial</div>
+      <div class="browser">
+        <div class="chrome"><i></i><i></i><i></i><div class="url">urlshield-api-x9et.onrender.com</div></div>
+        <nav class="nav">
+          <div class="brand"><svg width="40" height="40"><use href="#logo"/></svg>URL Shield</div>
+          <div class="nav-tools">
+            <span class="chip"><svg width="20" height="20"><use href="#i-text"/></svg>Letra maior</span>
+            <span class="chip">◐ Alto contraste</span>
+            <span class="chip text">Área técnica</span>
+          </div>
+        </nav>
+        <div class="home">
+          <h2>Recebeu um link?<br><span>Pare</span> e confira antes.</h2>
+          <p class="lead">Cole o link que chegou por WhatsApp, SMS ou e-mail. A gente confere sem abrir o site e responde com uma placa.</p>
+          <div class="checker">
+            <div class="field">Cole aqui o link que você recebeu</div>
+            <span class="btn"><svg width="22" height="22"><use href="#i-paste"/></svg>Colar</span>
+            <span class="btn"><svg width="22" height="22"><use href="#i-mic"/></svg>Falar</span>
+            <span class="btn primary">Conferir <svg width="22" height="22"><use href="#i-arrow"/></svg></span>
+          </div>
+          <div class="legend">
+            <h3>Como ler a resposta</h3>
+            <div class="legend-row">
+              <div class="legend-item"><svg width="72" height="72"><use href="#sign-stop"/></svg><div><b>Pare</b>É golpe. Não abra o link.</div></div>
+              <div class="legend-item"><svg width="76" height="76"><use href="#sign-warn"/></svg><div><b>Atenção</b>Pode ser golpe. Só abra se esperava.</div></div>
+              <div class="legend-item"><svg width="96" height="60"><use href="#sign-go"/></svg><div><b>Pode seguir</b>Sem sinais de golpe.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="label">Site · resultado “Pare”</div>
+      <div class="browser">
+        <div class="chrome"><i></i><i></i><i></i><div class="url">urlshield-api-x9et.onrender.com</div></div>
+        <div class="verdict">
+          <svg width="170" height="170" style="flex:none"><use href="#sign-stop"/></svg>
+          <div>
+            <h2>Não abra este link.</h2>
+            <p>Ele está fingindo ser a Caixa Econômica Federal para roubar seus dados.</p>
+            <span class="domain">caixa-gov-fgts.top</span>
+          </div>
+        </div>
+        <div class="result-body">
+          <div>
+            <h3>O que fazer agora</h3>
+            <ol class="todo">
+              <li><b>1</b>Não toque no link e não digite senha, CPF ou código.</li>
+              <li><b>2</b>Apague a mensagem que você recebeu.</li>
+              <li><b>3</b>A Caixa não pede dados por mensagem. Na dúvida, ligue para o número do seu cartão.</li>
+            </ol>
+            <div class="actions">
+              <span class="btn primary"><svg width="22" height="22"><use href="#i-family"/></svg>Mandar para a família</span>
+              <span class="btn"><svg width="22" height="22"><use href="#i-speaker"/></svg>Ouvir</span>
+            </div>
+          </div>
+          <div>
+            <h3>Por que a placa é Pare</h3>
+            <ul class="why">
+              <li><div>Usa o nome da Caixa, mas não é o site da Caixa.<small>O endereço oficial é caixa.gov.br</small></div></li>
+              <li><div>O nome do site parece inventado às pressas.<small>Combinação de letras típica de sites de golpe</small></div></li>
+              <li><div>O site não tem o cadeado de conexão segura.</div></li>
+            </ul>
+          </div>
+        </div>
+        <div class="result-foot">
+          <a>Ver detalhes técnicos da análise ›</a>
+          <a>Gerar laudo em PDF</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div>
+    <div class="phones">
+      <div class="phone-wrap">
+        <div class="label">App · pare</div>
+        <div class="phone"><div class="screen">
+          <div class="p-top">
+            <div class="status-bar"><span>9:41</span><span>●●● ▮</span></div>
+            <svg class="sign" width="150" height="150"><use href="#sign-stop"/></svg>
+            <h2>Não abra este link</h2>
+            <p>Ele está fingindo ser a Caixa para roubar seus dados.</p>
+            <span class="domain">caixa-gov-fgts.top</span>
+          </div>
+          <div class="p-body">
+            <h4>Por que</h4>
+            <div class="reason"><i></i>Usa o nome da Caixa, mas o endereço não é da Caixa.</div>
+            <div class="reason"><i></i>Não tem o cadeado de conexão segura.</div>
+            <div class="p-actions">
+              <span class="btn primary">Fechar e voltar</span>
+              <div class="row2">
+                <span class="btn"><svg width="22" height="22"><use href="#i-family"/></svg>Família</span>
+                <span class="btn"><svg width="22" height="22"><use href="#i-speaker"/></svg>Ouvir</span>
+              </div>
+              <span class="escape">Abrir mesmo assim</span>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="label">App · atenção</div>
+        <div class="phone"><div class="screen">
+          <div class="p-top">
+            <div class="status-bar"><span>9:41</span><span>●●● ▮</span></div>
+            <svg class="sign" width="160" height="160"><use href="#sign-warn"/></svg>
+            <h2>Atenção</h2>
+            <p>Este link é encurtado. Ele esconde para onde vai levar você.</p>
+            <span class="domain">bit.ly/3abc</span>
+          </div>
+          <div class="p-body">
+            <h4>Antes de abrir</h4>
+            <div class="reason"><i></i>Só abra se você esperava receber este link.</div>
+            <div class="reason"><i></i>Não digite senha nem dados do banco nele.</div>
+            <div class="p-actions">
+              <span class="btn primary">Fechar e voltar</span>
+              <div class="row2">
+                <span class="btn"><svg width="22" height="22"><use href="#i-family"/></svg>Família</span>
+                <span class="btn"><svg width="22" height="22"><use href="#i-speaker"/></svg>Ouvir</span>
+              </div>
+              <span class="escape">Abrir mesmo assim</span>
+            </div>
+          </div>
+        </div></div>
+      </div>
+
+      <div class="phone-wrap">
+        <div class="label">App · pode seguir</div>
+        <div class="phone"><div class="screen">
+          <div class="p-top">
+            <div class="status-bar"><span>9:41</span><span>●●● ▮</span></div>
+            <div class="sign" style="width:100%;background:#0A6B3B;border-radius:12px;box-shadow:0 0 0 4px #fff;padding:6px">
+              <div style="border:2.5px solid #fff;border-radius:8px;padding:14px 12px 14px 14px;display:flex;align-items:center;gap:10px;font-family:var(--cond);font-weight:700;color:#fff;line-height:1.05">
+                <div style="flex:1;min-width:0">
+                  <div style="font-size:18px;opacity:.85;text-transform:uppercase;letter-spacing:.6px">Destino</div>
+                  <div style="font-size:30px;white-space:nowrap">itau.com.br</div>
+                  <div style="font-size:18px;opacity:.85">site oficial do Itaú</div>
+                </div>
+                <svg width="30" height="44" viewBox="0 0 24 32" style="flex:none"><path d="M12 29V5M3 13l9-9 9 9" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <h2>Pode seguir, com atenção</h2>
+            <p>Não achamos sinais de golpe neste endereço.</p>
+          </div>
+          <div class="p-body">
+            <h4>Lembre sempre</h4>
+            <div class="reason"><i></i>Nenhum banco pede sua senha por mensagem.</div>
+            <div class="reason"><i></i>Se pedirem dinheiro com pressa, desconfie.</div>
+            <div class="p-actions">
+              <span class="btn go">Abrir site <svg width="22" height="22"><use href="#i-arrow"/></svg></span>
+              <div class="row2">
+                <span class="btn"><svg width="22" height="22"><use href="#i-family"/></svg>Família</span>
+                <span class="btn"><svg width="22" height="22"><use href="#i-speaker"/></svg>Ouvir</span>
+              </div>
+              <span class="offline-note">Conferido no celular · servidor indisponível</span>
+            </div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div class="note"><b>Código já aprendido</b>Octógono, losango e placa verde: a pessoa entende pela forma, mesmo sem ler e mesmo com daltonismo.</div>
+      <div class="note"><b>A placa verde mostra o destino</b>Como na rodovia: diz para onde o link leva de verdade (itau.com.br).</div>
+      <div class="note"><b>Asfalto só no veredito</b>O resto da tela é claro e calmo. O conceito aparece onde importa, sem virar fantasia.</div>
+      <div class="note"><b>Argumento para a banca</b>Modelo mental e semiótica: o usuário reaproveita um código que já domina.</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
