@@ -74,5 +74,70 @@ class TestURLShieldBackend(unittest.TestCase):
         self.assertEqual(mobile["verdict"], "ALLOW")
         self.assertIn("Nenhum sinal forte", mobile["title"])
 
+    def test_trusted_domain_is_not_typosquat(self):
+        # nubank x c6bank têm distância 2, mas nubank.com.br é oficial
+        res = calculate_typosquatting_distance("nubank.com.br")
+        self.assertFalse(res["is_typosquat"])
+        self.assertTrue(res["is_trusted"])
+
+    def test_leetspeak_and_brand_in_domain(self):
+        res_pp = calculate_typosquatting_distance("paypa1.com")
+        self.assertTrue(res_pp["is_typosquat"])
+        self.assertEqual(res_pp["best_matched_domain"], "paypal.com")
+
+        res_cx = calculate_typosquatting_distance("caixa-gov-fgts.top")
+        self.assertTrue(res_cx["is_typosquat"])
+        self.assertEqual(res_cx["impersonation_type"], "brand_in_domain")
+
+    def test_url_shortener_flagged(self):
+        self.assertTrue(analyze_url_lexical("https://bit.ly/3abc")["is_url_shortener"])
+
+    def test_invalid_url_rejected(self):
+        with self.assertRaises(ValueError):
+            full_url_analysis("httpx://???", perform_deep_inspection=False)
+
+    def test_crawler_blocks_internal_addresses(self):
+        from app.sandbox_crawler import inspect_page_safely
+        for internal in ["http://127.0.0.1:8000/", "http://169.254.169.254/latest/meta-data/", "http://localhost/"]:
+            result = inspect_page_safely(internal)
+            self.assertFalse(result["is_accessible"])
+            self.assertIn("rede privada", result["details"])
+
+    def test_crawler_detects_phishing_form(self):
+        import threading
+        from http.server import HTTPServer, BaseHTTPRequestHandler
+        from unittest import mock
+        from app import sandbox_crawler
+
+        page = (
+            "<html><head><title>Banco - Atualizacao</title></head><body>"
+            "<p>Sua conta foi suspensa. Valide seus dados.</p>"
+            "<form><input class='campo' name='cpf'><input type='password' name='senha'>"
+            "<input name='numero_cartao'></form></body></html>"
+        ).encode("utf-8")
+
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.end_headers()
+                self.wfile.write(page)
+
+            def log_message(self, *args):
+                pass
+
+        server = HTTPServer(("127.0.0.1", 0), Handler)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        try:
+            # o servidor de teste é local, então a proteção SSRF é desligada só aqui
+            with mock.patch.object(sandbox_crawler, "is_public_address", return_value=True):
+                result = sandbox_crawler.inspect_page_safely(f"http://127.0.0.1:{server.server_port}/")
+        finally:
+            server.shutdown()
+
+        self.assertTrue(result["has_password_input"])
+        self.assertTrue(result["has_credit_card_input"])
+        self.assertIn("sua conta foi suspensa", result["found_suspicious_keywords"])
+
 if __name__ == "__main__":
     unittest.main()

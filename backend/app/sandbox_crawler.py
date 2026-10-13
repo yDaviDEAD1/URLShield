@@ -2,6 +2,29 @@ import httpx
 from bs4 import BeautifulSoup
 from typing import Dict, Any, List
 import urllib.parse
+import ipaddress
+import socket
+
+MAX_REDIRECTS = 5
+
+
+def is_public_address(url: str) -> bool:
+    """
+    Proteção contra SSRF: só permite inspecionar hosts que resolvem para IPs públicos.
+    Evita que a API publicada acesse a rede interna (127.0.0.1, 10.x, 169.254.169.254...).
+    """
+    host = urllib.parse.urlparse(url).hostname
+    if not host:
+        return False
+    try:
+        addresses = {info[4][0] for info in socket.getaddrinfo(host, None)}
+    except (socket.gaierror, UnicodeError):
+        return False
+    for address in addresses:
+        ip = ipaddress.ip_address(address.split("%")[0])
+        if not ip.is_global:
+            return False
+    return True
 
 SUSPICIOUS_KEYWORDS = [
     "atualização cadastral", "bloqueio de conta", "sua conta foi suspensa",
@@ -37,16 +60,30 @@ def inspect_page_safely(url: str) -> Dict[str, Any]:
     
     try:
         # Usa httpx em modo assíncrono/síncrono controlado com timeout rápido
-        with httpx.Client(follow_redirects=True, timeout=5.0, verify=False) as client:
-            response = client.get(url, headers=headers)
-            
+        # Redirecionamentos seguidos manualmente para validar cada destino (proteção SSRF)
+        with httpx.Client(follow_redirects=False, timeout=5.0, verify=False) as client:
+            chain = []
+            current_url = url
+            for _ in range(MAX_REDIRECTS + 1):
+                if not is_public_address(current_url):
+                    result["details"] = "Inspeção bloqueada: o endereço aponta para uma rede privada ou interna."
+                    return result
+                response = client.get(current_url, headers=headers)
+                chain.append(current_url)
+                if not response.is_redirect:
+                    break
+                current_url = str(response.url.join(response.headers.get("location", "")))
+            else:
+                result["details"] = "Inspeção interrompida: redirecionamentos em excesso."
+                return result
+
             result["status_code"] = response.status_code
             result["final_url"] = str(response.url)
             result["is_accessible"] = response.status_code == 200
-            
+
             # Registra histórico de redirecionamentos
-            if response.history:
-                result["redirect_chain"] = [str(r.url) for r in response.history] + [str(response.url)]
+            if len(chain) > 1:
+                result["redirect_chain"] = chain
                 
             # Se obteve resposta com conteúdo HTML
             content_type = response.headers.get("content-type", "").lower()
@@ -62,7 +99,10 @@ def inspect_page_safely(url: str) -> Dict[str, Any]:
                 password_inputs = soup.find_all("input", {"type": "password"})
                 result["has_password_input"] = len(password_inputs) > 0
                 
-                card_inputs = soup.find_all("input", lambda tag: tag.get("name") and any(k in tag.get("name").lower() for k in ["card", "cartao", "cvv", "ccv"]))
+                card_inputs = [
+                    tag for tag in soup.find_all("input")
+                    if any(k in (tag.get("name") or "").lower() for k in ["card", "cartao", "cvv", "ccv"])
+                ]
                 result["has_credit_card_input"] = len(card_inputs) > 0
                 
                 # Procura palavras-chave de golpe no texto da página

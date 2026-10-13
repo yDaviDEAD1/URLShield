@@ -177,10 +177,36 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         currentUrl = link;
         showLoading();
         executor.execute(() -> {
+            // 1. Motor local: responde na hora e funciona sem internet nem servidor
+            AnalysisResult offlineResult = null;
             try {
-                AnalysisResult result = UrlShieldApi.analyze(link);
-                mainHandler.post(() -> showResult(result));
-            } catch (Exception error) {
+                offlineResult = AnalysisResult.fromOffline(OfflineAnalyzer.analyze(link));
+            } catch (Exception ignored) {
+                // segue para a análise online
+            }
+
+            // 2. Perigo claro já detectado localmente: bloqueia sem esperar o servidor
+            if (offlineResult != null && offlineResult.isBlocked()) {
+                AnalysisResult blocked = offlineResult;
+                mainHandler.post(() -> showResult(blocked));
+                return;
+            }
+
+            // 3. Servidor disponível: análise completa (WHOIS, certificado SSL, DNS)
+            if (UrlShieldApi.isConfigured()) {
+                try {
+                    AnalysisResult onlineResult = UrlShieldApi.analyze(link);
+                    mainHandler.post(() -> showResult(onlineResult));
+                    return;
+                } catch (Exception ignored) {
+                    // servidor fora do ar ou sem internet: usa o resultado local
+                }
+            }
+
+            AnalysisResult fallback = offlineResult;
+            if (fallback != null) {
+                mainHandler.post(() -> showResult(fallback));
+            } else {
                 mainHandler.post(this::showFailClosedError);
             }
         });
@@ -213,7 +239,9 @@ public final class MainActivity extends Activity implements TextToSpeech.OnInitL
         resultDomain.setText(result.domain);
         riskScore.setText(getString(R.string.risk_format, result.riskScore));
         resultSummary.setText(result.summary);
-        resultRecommendation.setText(result.recommendation);
+        resultRecommendation.setText(result.offline
+                ? result.recommendation + "\n\n" + getString(R.string.offline_analysis_note)
+                : result.recommendation);
         familyButton.setVisibility(View.VISIBLE);
         listenButton.setVisibility(View.VISIBLE);
 

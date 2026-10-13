@@ -12,11 +12,15 @@ def calculate_heuristic_score(lexical_data: Dict[str, Any], network_data: Dict[s
     if typosquat.get("is_typosquat"):
         matched = typosquat.get("best_matched_domain")
         dist = typosquat.get("min_levenshtein_distance")
+        if typosquat.get("impersonation_type") == "brand_in_domain":
+            description = f"O endereço usa o nome da marca '{matched}', mas não pertence à empresa oficial."
+        else:
+            description = f"O endereço tenta se passar por '{matched}' alterando apenas {dist} caractere(s)."
         score += 40.0
         penalties.append({
             "category": "Typosquatting (Nome Imitação)",
             "points": 40.0,
-            "description": f"O endereço tenta se passar por '{matched}' alterando apenas {dist} caractere(s)."
+            "description": description
         })
 
     # 2. Ataque Homográfico (Unicode disfarçado)
@@ -45,6 +49,15 @@ def calculate_heuristic_score(lexical_data: Dict[str, Any], network_data: Dict[s
             "category": "IP Numérico Direto",
             "points": 25.0,
             "description": "O link usa um endereço IP numérico direto sem um nome de domínio registrado."
+        })
+
+    # 4b. Encurtador de link (destino real escondido)
+    if lexical_data.get("is_url_shortener"):
+        score += 30.0
+        penalties.append({
+            "category": "Link Encurtado",
+            "points": 30.0,
+            "description": "Este é um link encurtado, que esconde o endereço verdadeiro do site de destino."
         })
 
     # 5. Domínio Recente (< 30 dias)

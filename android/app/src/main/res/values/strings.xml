@@ -28,4 +28,5 @@
     <string name="site_not_opened">Site não aberto</string>
     <string name="verification_failed_summary">A conexão com o serviço de proteção falhou.</string>
     <string name="verification_failed_recommendation">Por segurança, não abrimos este link. Tente novamente mais tarde ou peça ajuda a um familiar.</string>
+    <string name="offline_analysis_note">Análise feita no próprio celular. A consulta completa ao servidor (idade do site e certificado de segurança) não estava disponível.</string>
 </resources>

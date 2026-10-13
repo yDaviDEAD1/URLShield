@@ -4,8 +4,10 @@ plugins {
     id("com.android.application")
 }
 
+// Sem URL configurada o app funciona somente com o motor offline.
+// Emulador com API local: -PURL_SHIELD_API_URL=http://10.0.2.2:8000
 val urlShieldApiUrl = providers.gradleProperty("URL_SHIELD_API_URL")
-    .orElse("http://10.0.2.2:8000")
+    .orElse("")
 val alternateJavac = providers.environmentVariable("URLSHIELD_JAVAC")
 val localDebugKeystore = file(".local/urlshield-debug.keystore")
 

@@ -1,0 +1,15 @@
+# Blueprint do Render: publica a API + interface web do URL Shield em HTTPS.
+# No painel do Render: New > Blueprint > selecione este repositório.
+services:
+  - type: web
+    name: urlshield-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7

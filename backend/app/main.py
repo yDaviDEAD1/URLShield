@@ -1,5 +1,6 @@
 import os
 import uvicorn
+from urllib.parse import urlparse
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -67,13 +68,22 @@ def build_mobile_response(report: Dict[str, Any]) -> Dict[str, Any]:
         "can_continue": True,
     }
 
+def is_valid_web_url(url: str) -> bool:
+    """Aceita somente http/https com host contendo letras/dígitos (domínio ou IP)."""
+    parsed = urlparse(url)
+    host = parsed.hostname or ""
+    return parsed.scheme in ("http", "https") and "." in host and any(c.isalnum() for c in host)
+
+
 def full_url_analysis(url: str, perform_deep_inspection: bool = True) -> Dict[str, Any]:
     """
     Função principal que orquestra a análise em 4 camadas.
     """
     cleaned_url = url.strip()
-    if not cleaned_url.startswith("http://") and not cleaned_url.startswith("https://"):
+    if "://" not in cleaned_url:
         cleaned_url = "https://" + cleaned_url
+    if not is_valid_web_url(cleaned_url):
+        raise ValueError("URL inválida: informe um endereço http ou https com domínio.")
 
     # 1. Análise Léxica & Matemática de Strings (Levenshtein, Entropia, Homógrafo)
     lexical_results = analyze_url_lexical(cleaned_url)
@@ -121,6 +131,8 @@ def analyze_url_endpoint(payload: URLAnalysisRequest):
     try:
         report = full_url_analysis(payload.url, perform_deep_inspection=payload.deep_inspection)
         return report
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro durante a análise da URL: {str(e)}")
 
@@ -134,6 +146,8 @@ def analyze_url_for_mobile(payload: URLAnalysisRequest):
     try:
         report = full_url_analysis(payload.url, perform_deep_inspection=False)
         return build_mobile_response(report)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro durante a análise da URL: {str(e)}")
 

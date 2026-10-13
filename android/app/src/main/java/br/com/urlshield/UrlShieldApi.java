@@ -15,6 +15,11 @@ final class UrlShieldApi {
     private UrlShieldApi() {
     }
 
+    /** Falso quando o APK foi gerado sem servidor configurado (modo somente offline). */
+    static boolean isConfigured() {
+        return !BuildConfig.URL_SHIELD_API_URL.isEmpty();
+    }
+
     static AnalysisResult analyze(String link) throws Exception {
         URL endpoint = new URL(BuildConfig.URL_SHIELD_API_URL + "/api/mobile/analyze");
         HttpURLConnection connection = (HttpURLConnection) endpoint.openConnection();

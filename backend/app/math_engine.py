@@ -18,8 +18,25 @@ TRUSTED_DOMAINS = [
     "tiktok.com", "youtube.com", "twitter.com", "x.com",
     # Big Techs & Portais
     "google.com", "google.com.br", "outlook.com", "live.com", "microsoft.com",
-    "apple.com", "netflix.com", "globo.com", "gov.br"
+    "apple.com", "netflix.com", "globo.com", "gov.br",
+    # Pagamentos e Serviços Globais
+    "paypal.com", "icloud.com", "linkedin.com", "correios.com.br"
 ]
+
+# Encurtadores de link escondem o destino real do usuário
+URL_SHORTENERS = [
+    "bit.ly", "tinyurl.com", "t.co", "goo.gl", "ow.ly", "is.gd", "cutt.ly",
+    "rebrand.ly", "shorturl.at", "encurtador.com.br", "tiny.cc", "rb.gy", "s.id"
+]
+
+# Substituições comuns de caracteres usadas em imitações (leetspeak)
+LEET_MAP = str.maketrans({"0": "o", "1": "l", "3": "e", "4": "a", "5": "s", "7": "t", "8": "b", "@": "a", "$": "s"})
+
+
+def is_trusted_domain(domain: str) -> bool:
+    """Verifica se o domínio registrado é exatamente um domínio oficial (ou órgão .gov.br)."""
+    domain = domain.lower()
+    return domain in TRUSTED_DOMAINS or domain.endswith(".gov.br")
 
 def calculate_shannon_entropy(text: str) -> float:
     """
@@ -70,14 +87,45 @@ def calculate_typosquatting_distance(domain: str) -> Dict[str, Any]:
     """
     extracted = tldextract.extract(domain)
     domain_name_only = extracted.domain.lower()
-    
+    registered = f"{domain_name_only}.{extracted.suffix}" if extracted.suffix else domain_name_only
+
+    # Domínio oficial: não é imitação de si mesmo nem de marcas parecidas (ex: nubank x c6bank)
+    if is_trusted_domain(registered):
+        return {
+            "is_typosquat": False,
+            "is_trusted": True,
+            "min_levenshtein_distance": 0,
+            "best_matched_domain": registered,
+            "similarity_percentage": 100.0,
+            "impersonation_type": None
+        }
+
     # Divide partes do domínio se houver hífens (ex: bancodobras1l-atualizacao -> ["bancodobras1l", "atualizacao"])
     parts = [domain_name_only] + [p for p in domain_name_only.split('-') if len(p) >= 3]
-    
+
+    # Marca oficial usada inteira em domínio de terceiros (ex: caixa-gov-fgts.top, nubank-cliente.com)
+    # ou disfarçada com leetspeak (ex: paypa1 -> paypal)
+    for part in parts:
+        normalized = part.translate(LEET_MAP)
+        for trusted in TRUSTED_DOMAINS:
+            trusted_name = tldextract.extract(trusted).domain.lower()
+            if len(trusted_name) < 4:
+                continue  # nomes curtos (bb, x, gov) gerariam falsos positivos
+            if normalized == trusted_name:
+                dist = Levenshtein.distance(part, trusted_name)
+                return {
+                    "is_typosquat": True,
+                    "is_trusted": False,
+                    "min_levenshtein_distance": dist,
+                    "best_matched_domain": trusted,
+                    "similarity_percentage": round(Levenshtein.ratio(part, trusted_name) * 100, 2),
+                    "impersonation_type": "leetspeak" if dist > 0 else "brand_in_domain"
+                }
+
     best_match = ""
     min_distance = float('inf')
     highest_similarity = 0.0
-    
+
     for part in parts:
         for trusted in TRUSTED_DOMAINS:
             trusted_extracted = tldextract.extract(trusted)
@@ -102,9 +150,11 @@ def calculate_typosquatting_distance(domain: str) -> Dict[str, Any]:
         
     return {
         "is_typosquat": is_typosquat,
+        "is_trusted": False,
         "min_levenshtein_distance": int(min_distance) if min_distance != float('inf') else -1,
         "best_matched_domain": best_match,
-        "similarity_percentage": round(highest_similarity * 100, 2)
+        "similarity_percentage": round(highest_similarity * 100, 2),
+        "impersonation_type": "levenshtein" if is_typosquat else None
     }
 
 
@@ -157,5 +207,6 @@ def analyze_url_lexical(url: str) -> Dict[str, Any]:
         "is_homograph": is_homograph,
         "homograph_reason": homograph_reason,
         "typosquat_info": typosquat_info,
-        "is_raw_ip": is_ip
+        "is_raw_ip": is_ip,
+        "is_url_shortener": domain_full.lower() in URL_SHORTENERS
     }
