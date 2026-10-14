@@ -15,6 +15,9 @@ O URL Shield confere o link **antes** de a pessoa abrir o site e responde de um 
 **Experimente agora:** [urlshield-api-x9et.onrender.com](https://urlshield-api-x9et.onrender.com)
 <sub>(está no plano gratuito do Render; se ninguém acessou nos últimos minutos, a primeira consulta pode levar até um minuto para “acordar” o servidor)</sub>
 
+**Baixe o app para Android:** [URLShield.apk](https://github.com/yDaviDEAD1/URLShield/releases/latest/download/URLShield.apk)
+<sub>(no celular, permita “instalar apps desta fonte” quando o Android pedir; depois abra o app e toque em *Ativar proteção*)</sub>
+
 ---
 
 ## No celular, a proteção acontece sozinha
