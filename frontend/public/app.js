@@ -165,6 +165,16 @@ document.addEventListener('DOMContentLoaded', () => {
         analyzeUrl();
     });
 
+    // Celular: só 2 golpes à mostra; o botão revela os demais
+    const moreScams = $('more-scams');
+    if (moreScams) {
+        moreScams.addEventListener('click', () => {
+            document.querySelector('.protect').classList.add('show-all');
+            document.querySelectorAll('.scam')[2].querySelector('h3').setAttribute('tabindex', '-1');
+            document.querySelectorAll('.scam')[2].querySelector('h3').focus();
+        });
+    }
+
     // "Conferir este exemplo": coloca o link do golpe no campo e confere
     document.querySelectorAll('[data-example]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -183,6 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         showInputError('');
         if (window.speechSynthesis) window.speechSynthesis.cancel();
+        stopSpeaking();
 
         resultSection.classList.add('hidden');
         loadingHint.textContent = LOADING_HINT;
@@ -380,23 +391,99 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(message), '_blank', 'noopener');
     });
 
+    // ---------- leitura em voz alta ----------
+    // Celulares carregam as vozes depois da página e às vezes travam a fila de fala;
+    // por isso a voz em português é escolhida explicitamente e o estado é controlado aqui.
+    const synth = window.speechSynthesis;
+    const speakHelp = $('speak-help');
+    let voices = [];
+    let isSpeaking = false;
+    let utterances = [];   // mantém referência: o Chrome descarta falas sem referência
+    let startTimer = null;
+
+    function loadVoices() {
+        if (synth) voices = synth.getVoices();
+    }
+    if (synth) {
+        loadVoices();
+        synth.addEventListener('voiceschanged', loadVoices);
+    }
+
+    function portugueseVoice() {
+        return voices.find((v) => /^pt[-_]BR/i.test(v.lang) && v.localService)
+            || voices.find((v) => /^pt[-_]BR/i.test(v.lang))
+            || voices.find((v) => /^pt/i.test(v.lang))
+            || null;
+    }
+
+    function speechFor(data) {
+        const verdict = VERDICTS[data.heuristics.risk_level] || VERDICTS.SUSPEITO;
+        return [verdict.title, buildSubtitle(data.heuristics.risk_level, data), verdict.todo[0]];
+    }
+
+    function stopSpeaking() {
+        clearTimeout(startTimer);
+        isSpeaking = false;
+        utterances = [];
+        speakBtnText.textContent = 'Ouvir';
+    }
+
+    function showSpeakHelp() {
+        speakHelp.hidden = false;
+    }
+
     speakBtn.addEventListener('click', () => {
-        if (!('speechSynthesis' in window) || !lastAnalysis) return;
-        if (window.speechSynthesis.speaking) {
-            window.speechSynthesis.cancel();
-            speakBtnText.textContent = 'Ouvir';
+        if (!lastAnalysis) return;
+        speakHelp.hidden = true;
+        if (!synth) {
+            showSpeakHelp();
             return;
         }
-        const utterance = new SpeechSynthesisUtterance(lastAnalysis.accessible_explanation.speech_text);
-        utterance.lang = 'pt-BR';
-        utterance.rate = 0.92;
-        utterance.onend = () => { speakBtnText.textContent = 'Ouvir'; };
+        if (isSpeaking) {
+            synth.cancel();
+            stopSpeaking();
+            return;
+        }
+
+        // Destrava uma fila presa de tentativas anteriores
+        if (synth.speaking || synth.pending) synth.cancel();
+        synth.resume();
+        loadVoices();
+
+        const voice = portugueseVoice();
+        let started = false;
+        // Frases curtas, uma por vez: o Chrome interrompe falas longas
+        utterances = speechFor(lastAnalysis).map((text) => {
+            const u = new SpeechSynthesisUtterance(text);
+            if (voice) u.voice = voice;
+            u.lang = voice ? voice.lang : 'pt-BR';
+            u.rate = 0.92;
+            u.onstart = () => { started = true; clearTimeout(startTimer); };
+            u.onerror = (event) => {
+                if (event.error !== 'interrupted' && event.error !== 'canceled') showSpeakHelp();
+                stopSpeaking();
+            };
+            return u;
+        });
+        utterances[utterances.length - 1].onend = stopSpeaking;
+
+        isSpeaking = true;
         speakBtnText.textContent = 'Parar';
-        window.speechSynthesis.speak(utterance);
+        utterances.forEach((u) => synth.speak(u));
+
+        // Se nada começar a tocar, avisa em vez de ficar em silêncio
+        startTimer = setTimeout(() => {
+            if (!started) {
+                synth.cancel();
+                stopSpeaking();
+                showSpeakHelp();
+            }
+        }, 4000);
     });
 
     $('new-check-btn').addEventListener('click', () => {
         if (window.speechSynthesis) window.speechSynthesis.cancel();
+        stopSpeaking();
         resultSection.classList.add('hidden');
         urlInput.value = '';
         window.scrollTo({ top: 0, behavior: 'smooth' });

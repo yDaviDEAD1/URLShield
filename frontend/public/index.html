@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=6">
+    <link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
 
@@ -117,11 +117,6 @@
 
                 <!-- Ilustração: um golpe real com a placa fincada ao lado -->
                 <div class="scene" aria-hidden="true">
-                    <div class="notif notif-back">
-                        <div class="notif-head"><span class="notif-app">✉</span>Mensagens<span class="notif-time">ontem</span></div>
-                        <div class="notif-from">Correios</div>
-                        <div class="notif-text">Sua encomenda está retida. Pague a taxa de R$ 8,90…</div>
-                    </div>
                     <div class="notif notif-front">
                         <div class="notif-head"><span class="notif-app">✉</span>Mensagens<span class="notif-time">agora</span></div>
                         <div class="notif-from">+55 61 9 9812-4471</div>
@@ -174,6 +169,11 @@
                             <svg width="22" height="22" aria-hidden="true"><use href="#i-speaker"/></svg><span id="speak-btn-text">Ouvir</span>
                         </button>
                     </div>
+                    <p id="speak-help" class="speak-help" role="status" hidden>
+                        Não conseguimos ler em voz alta neste aparelho. Confira se o <strong>volume de mídia</strong> está ligado
+                        (no iPhone, também a chave de silencioso) e se o celular tem uma voz em português
+                        em <em>Configurações › Acessibilidade › Saída de texto para voz</em>.
+                    </p>
                 </div>
                 <div id="reasons-wrapper">
                     <h3 id="reasons-title" class="section-kicker">Por que</h3>
@@ -213,30 +213,31 @@
                 <p class="section-lead">São estas as mensagens que mais enganam hoje. Veja como reconhecer cada uma.</p>
                 <ul class="scam-grid">
                     <li class="scam">
-                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Taxa dos Correios</h3><span>por SMS</span></div></div>
-                        <p class="scam-text">Sua encomenda está retida. Pague a taxa de R$ 8,90 para liberar: <span class="scam-link">correios-rastreio.shop/taxa</span></p>
+                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Taxa dos Correios</h3></div></div>
+                        <p class="scam-text">Sua encomenda está retida. Pague a taxa para liberar: <span class="scam-link">correios-rastreio.shop/taxa</span></p>
                         <p class="scam-tip"><strong>Como reconhecer</strong>Os Correios não cobram taxa por mensagem. O site oficial termina em <code>correios.com.br</code>.</p>
                         <button type="button" class="link-btn scam-try" data-example="https://correios-rastreio.shop/taxa">Conferir este exemplo<svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></button>
                     </li>
                     <li class="scam">
-                        <div class="scam-kind"><svg width="40" height="40" aria-hidden="true"><use href="#sign-warn"/></svg><div><h3>“Troquei de número”</h3><span>no WhatsApp</span></div></div>
-                        <p class="scam-text">Oi mãe, troquei de número! Me ajuda com um Pix? Te explico aqui: <span class="scam-link">bit.ly/3abc</span></p>
+                        <div class="scam-kind"><svg width="40" height="40" aria-hidden="true"><use href="#sign-warn"/></svg><div><h3>“Troquei de número”</h3></div></div>
+                        <p class="scam-text">Oi mãe, troquei de número! Me ajuda com um Pix? <span class="scam-link">bit.ly/3abc</span></p>
                         <p class="scam-tip"><strong>Como reconhecer</strong>Antes de qualquer Pix, ligue para o número antigo da pessoa e confirme por voz.</p>
                         <button type="button" class="link-btn scam-try" data-example="https://bit.ly/3abc">Conferir este exemplo<svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></button>
                     </li>
                     <li class="scam">
-                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Compra que você não fez</h3><span>por e-mail</span></div></div>
-                        <p class="scam-text">Detectamos uma compra de R$ 2.390. Se não foi você, cancele: <span class="scam-link">nubank-cliente.com</span></p>
+                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Compra que você não fez</h3></div></div>
+                        <p class="scam-text">Compra de R$ 2.390 aprovada. Não foi você? Cancele: <span class="scam-link">nubank-cliente.com</span></p>
                         <p class="scam-tip"><strong>Como reconhecer</strong>O susto é proposital. Não clique: abra o aplicativo do banco que já está no seu celular.</p>
                         <button type="button" class="link-btn scam-try" data-example="https://nubank-cliente.com">Conferir este exemplo<svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></button>
                     </li>
                     <li class="scam">
-                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Dinheiro do governo</h3><span>por SMS</span></div></div>
-                        <p class="scam-text">Você tem R$ 1.284 de FGTS para sacar. Confirme seus dados até hoje: <span class="scam-link">caixa-gov-fgts.top</span></p>
+                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Dinheiro do governo</h3></div></div>
+                        <p class="scam-text">Você tem FGTS para sacar. Confirme até hoje: <span class="scam-link">caixa-gov-fgts.top</span></p>
                         <p class="scam-tip"><strong>Como reconhecer</strong>Sites do governo terminam em <code>gov.br</code>. Prazo curto e pressa são sinal de golpe.</p>
                         <button type="button" class="link-btn scam-try" data-example="http://caixa-gov-fgts.top/saque">Conferir este exemplo<svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></button>
                     </li>
                 </ul>
+                <button type="button" class="btn more-scams" id="more-scams">Ver mais golpes comuns</button>
             </div>
         </section>
 
@@ -323,6 +324,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=6"></script>
+    <script src="app.js?v=9"></script>
 </body>
 </html>
