@@ -4,6 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,6 +65,9 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
     private boolean ttsReady;
     private boolean ttsFailed;
     private String pendingSpeech;
+    private MediaPlayer player;
+    private final Runnable audioTimeout = this::onServerAudioTimeout;
+    private String audioSpeech;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -443,17 +451,96 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         if (currentResult == null) {
             return;
         }
+        // Tocar de novo = parar
+        if (player != null || textToSpeech.isSpeaking()) {
+            stopAllSpeech();
+            return;
+        }
+        String speech = speechText();
+        warnIfMediaMuted();
+        if (UrlShieldApi.isConfigured() && hasInternet()) {
+            playServerAudio(speech);
+        } else {
+            speakWithDeviceVoice(speech);
+        }
+    }
+
+    /** O que é lido: veredito + frase principal (curto, para caber no limite do servidor). */
+    private String speechText() {
+        String text = verdictTitle.getText() + ". " + verdictSubtitle.getText();
+        return text.length() > 380 ? text.substring(0, 380) : text;
+    }
+
+    /**
+     * Principal: áudio MP3 gerado pelo servidor (/api/tts), tocado como mídia.
+     * A voz embutida do Android depende do mecanismo instalado e falha em vários aparelhos.
+     */
+    private void playServerAudio(String speech) {
+        audioSpeech = speech;
+        Uri uri = Uri.parse(BuildConfig.URL_SHIELD_API_URL + "/api/tts")
+                .buildUpon().appendQueryParameter("text", speech).build();
+        player = new MediaPlayer();
+        player.setAudioAttributes(new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build());
+        player.setOnPreparedListener(mp -> {
+            mainHandler.removeCallbacks(audioTimeout);
+            Log.i(TAG, "Áudio do servidor tocando");
+            mp.start();
+        });
+        player.setOnCompletionListener(mp -> {
+            Log.i(TAG, "Áudio do servidor terminou");
+            releasePlayer();
+        });
+        player.setOnErrorListener((mp, what, extra) -> {
+            Log.w(TAG, "Áudio do servidor falhou (" + what + "/" + extra + "), usando a voz do aparelho");
+            releasePlayer();
+            speakWithDeviceVoice(speech);
+            return true;
+        });
+        try {
+            player.setDataSource(this, uri);
+            player.prepareAsync();
+            listenButton.setText(R.string.stop_listening);
+            Links.centerIconAndText(listenButton);
+            mainHandler.postDelayed(audioTimeout, 6_000);
+        } catch (Exception error) {
+            Log.w(TAG, "Não foi possível carregar o áudio", error);
+            releasePlayer();
+            speakWithDeviceVoice(speech);
+        }
+    }
+
+    private void onServerAudioTimeout() {
+        if (player != null && !player.isPlaying()) {
+            Log.w(TAG, "Áudio do servidor demorou demais, usando a voz do aparelho");
+            releasePlayer();
+            speakWithDeviceVoice(audioSpeech);
+        }
+    }
+
+    private void releasePlayer() {
+        mainHandler.removeCallbacks(audioTimeout);
+        if (player != null) {
+            player.release();
+            player = null;
+        }
+        listenButton.setText(R.string.listen);
+        Links.centerIconAndText(listenButton);
+    }
+
+    private void stopAllSpeech() {
+        releasePlayer();
+        textToSpeech.stop();
+    }
+
+    /** Reserva (sem internet ou servidor fora): voz do próprio Android. */
+    private void speakWithDeviceVoice(String speech) {
         if (ttsFailed) {
             showNoVoiceHelp();
             return;
         }
-        if (textToSpeech.isSpeaking()) {
-            textToSpeech.stop();
-            return;
-        }
-        String speech = currentResult.speechText.isEmpty()
-                ? verdictTitle.getText() + ". " + verdictSubtitle.getText()
-                : currentResult.speechText;
         if (!ttsReady) {
             // O motor de voz ainda está iniciando: fala assim que ficar pronto
             pendingSpeech = speech;
@@ -461,6 +548,23 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
             return;
         }
         speak(speech);
+    }
+
+    private boolean hasInternet() {
+        ConnectivityManager manager = getSystemService(ConnectivityManager.class);
+        if (manager == null) {
+            return false;
+        }
+        NetworkCapabilities caps = manager.getNetworkCapabilities(manager.getActiveNetwork());
+        return caps != null && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+    }
+
+    /** Volume de mídia no zero é a causa mais comum de "não saiu som". */
+    private void warnIfMediaMuted() {
+        AudioManager audio = getSystemService(AudioManager.class);
+        if (audio != null && audio.getStreamVolume(AudioManager.STREAM_MUSIC) == 0) {
+            Toast.makeText(this, R.string.media_muted, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void speak(String speech) {
@@ -528,6 +632,23 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
                 .show();
     }
 
+    private void releasePlayerQuietly() {
+        mainHandler.removeCallbacks(audioTimeout);
+        if (player != null) {
+            player.release();
+            player = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        // Saiu do pop-up (abriu o site, voltou ao WhatsApp): para a leitura
+        if (player != null || (textToSpeech != null && textToSpeech.isSpeaking())) {
+            stopAllSpeech();
+        }
+        super.onStop();
+    }
+
     private GradientDrawable rounded(int color, int radiusDp) {
         GradientDrawable shape = new GradientDrawable();
         shape.setColor(color);
@@ -550,6 +671,7 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
     @Override
     protected void onDestroy() {
         executor.shutdownNow();
+        releasePlayerQuietly();
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();

@@ -35,6 +35,8 @@
     <string name="close_and_return">Fechar e voltar</string>
     <string name="ask_family">Família</string>
     <string name="listen">Ouvir</string>
+    <string name="stop_listening">Parar</string>
+    <string name="media_muted">O volume de mídia está no zero. Aumente pelos botões laterais do celular.</string>
     <string name="continue_anyway">Abrir mesmo assim</string>
     <string name="confirm_title">Abrir mesmo assim?</string>
     <string name="confirm_message">O URL Shield recomenda não abrir este endereço. Nunca informe senhas, códigos ou dados do banco.</string>
