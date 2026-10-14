@@ -147,5 +147,17 @@ class TestURLShieldBackend(unittest.TestCase):
         self.assertTrue(result["has_credit_card_input"])
         self.assertIn("sua conta foi suspensa", result["found_suspicious_keywords"])
 
+    def test_tts_endpoint_returns_mp3(self):
+        from unittest import mock
+        from fastapi.testclient import TestClient
+        from app import main
+        with mock.patch.object(main, "synthesize_speech", return_value=b"ID3-fake-mp3"):
+            client = TestClient(main.app)
+            ok = client.get("/api/tts", params={"text": "Não abra este link."})
+            self.assertEqual(ok.status_code, 200)
+            self.assertEqual(ok.headers["content-type"], "audio/mpeg")
+            too_long = client.get("/api/tts", params={"text": "a" * 500})
+            self.assertEqual(too_long.status_code, 422)
+
 if __name__ == "__main__":
     unittest.main()

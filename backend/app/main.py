@@ -1,7 +1,8 @@
 import os
 import uvicorn
 from urllib.parse import urlparse
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, HttpUrl
@@ -12,6 +13,7 @@ from app.network_checker import analyze_network
 from app.sandbox_crawler import inspect_page_safely
 from app.heuristics import calculate_heuristic_score
 from app.explainer import generate_accessible_explanation, friendly_reasons
+from app.tts import synthesize_speech, MAX_TEXT_LENGTH
 
 app = FastAPI(
     title="URL Shield API",
@@ -153,6 +155,16 @@ def analyze_url_for_mobile(payload: URLAnalysisRequest):
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro durante a análise da URL: {str(e)}")
+
+@app.get("/api/tts")
+def text_to_speech(text: str = Query(..., min_length=1, max_length=MAX_TEXT_LENGTH)):
+    """Áudio MP3 da explicação, para o botão "Ouvir" funcionar em qualquer celular."""
+    try:
+        audio = synthesize_speech(text.strip())
+    except Exception:
+        raise HTTPException(status_code=503, detail="Serviço de voz indisponível no momento.")
+    return Response(content=audio, media_type="audio/mpeg",
+                    headers={"Cache-Control": "public, max-age=86400"})
 
 # Monta a interface web estática (HTML/CSS/JS) para servir na raiz "/"
 frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public"))

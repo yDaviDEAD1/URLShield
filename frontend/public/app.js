@@ -421,10 +421,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return [verdict.title, buildSubtitle(data.heuristics.risk_level, data), verdict.todo[0]];
     }
 
+    let audio = null;
+
     function stopSpeaking() {
         clearTimeout(startTimer);
         isSpeaking = false;
         utterances = [];
+        if (audio) {
+            audio.onended = audio.onerror = null;
+            audio.pause();
+            audio = null;
+        }
         speakBtnText.textContent = 'Ouvir';
     }
 
@@ -432,28 +439,19 @@ document.addEventListener('DOMContentLoaded', () => {
         speakHelp.hidden = false;
     }
 
-    speakBtn.addEventListener('click', () => {
-        if (!lastAnalysis) return;
-        speakHelp.hidden = true;
+    // Reserva: voz embutida do navegador (funciona bem no computador)
+    function speakWithBrowserVoice(sentences) {
         if (!synth) {
+            stopSpeaking();
             showSpeakHelp();
             return;
         }
-        if (isSpeaking) {
-            synth.cancel();
-            stopSpeaking();
-            return;
-        }
-
-        // Destrava uma fila presa de tentativas anteriores
         if (synth.speaking || synth.pending) synth.cancel();
         synth.resume();
         loadVoices();
-
         const voice = portugueseVoice();
         let started = false;
-        // Frases curtas, uma por vez: o Chrome interrompe falas longas
-        utterances = speechFor(lastAnalysis).map((text) => {
+        utterances = sentences.map((text) => {
             const u = new SpeechSynthesisUtterance(text);
             if (voice) u.voice = voice;
             u.lang = voice ? voice.lang : 'pt-BR';
@@ -466,19 +464,48 @@ document.addEventListener('DOMContentLoaded', () => {
             return u;
         });
         utterances[utterances.length - 1].onend = stopSpeaking;
-
         isSpeaking = true;
         speakBtnText.textContent = 'Parar';
         utterances.forEach((u) => synth.speak(u));
-
-        // Se nada começar a tocar, avisa em vez de ficar em silêncio
         startTimer = setTimeout(() => {
-            if (!started) {
+            if (!started && !synth.speaking) {
                 synth.cancel();
                 stopSpeaking();
                 showSpeakHelp();
             }
         }, 4000);
+    }
+
+    speakBtn.addEventListener('click', () => {
+        if (!lastAnalysis) return;
+        speakHelp.hidden = true;
+        if (isSpeaking) {
+            if (synth) synth.cancel();
+            stopSpeaking();
+            return;
+        }
+
+        const sentences = speechFor(lastAnalysis);
+        // Principal: áudio gerado pelo servidor. O play() precisa acontecer dentro do
+        // toque, senão o celular bloqueia; por isso o áudio é criado aqui mesmo.
+        isSpeaking = true;
+        speakBtnText.textContent = 'Parar';
+        audio = new Audio('/api/tts?text=' + encodeURIComponent(sentences.join(' ')));
+        audio.playbackRate = 0.95;
+        let fellBack = false;
+        const fallback = () => {
+            if (fellBack) return;
+            fellBack = true;
+            if (audio) {
+                audio.onended = audio.onerror = null;
+                audio.pause();
+                audio = null;
+            }
+            speakWithBrowserVoice(sentences);
+        };
+        audio.onended = stopSpeaking;
+        audio.onerror = fallback;
+        audio.play().catch(fallback);
     });
 
     $('new-check-btn').addEventListener('click', () => {
