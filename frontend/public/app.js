@@ -165,6 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
         analyzeUrl();
     });
 
+    // "Conferir este exemplo": coloca o link do golpe no campo e confere
+    document.querySelectorAll('[data-example]').forEach((button) => {
+        button.addEventListener('click', () => {
+            urlInput.value = button.dataset.example;
+            analyzeUrl();
+        });
+    });
+
     // ---------- análise ----------
     async function analyzeUrl() {
         const url = urlInput.value.trim();
@@ -261,6 +269,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return ['O link usa números no lugar do nome de um site.', 'Endereço IP direto, sem domínio registrado'];
             case 'Link Encurtado':
                 return ['O link é encurtado e esconde o endereço verdadeiro.', null];
+            case 'Terminação Suspeita':
+                return ['O endereço termina de um jeito muito usado em sites de golpe.', `Terminação .${lex.tld}`];
             case 'Domínio Recém-Criado':
                 return [`O site foi criado há apenas ${net.domain_age_days} dia(s).`, 'Golpistas criam e descartam sites o tempo todo'];
             case 'Sem Conexão Segura (SSL)':

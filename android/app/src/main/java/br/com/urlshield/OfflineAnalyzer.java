@@ -45,6 +45,12 @@ final class OfflineAnalyzer {
             "rebrand.ly", "shorturl.at", "encurtador.com.br", "tiny.cc", "rb.gy", "s.id"
     ));
 
+    // Terminações baratas muito usadas em golpes (mesma lista do backend)
+    private static final Set<String> SUSPICIOUS_TLDS = new HashSet<>(Arrays.asList(
+            "top", "xyz", "shop", "online", "site", "click", "live", "icu", "buzz", "cfd",
+            "sbs", "rest", "monster", "quest", "cyou", "bond", "lol", "store", "vip", "work"
+    ));
+
     // Sufixos públicos de dois níveis mais comuns (subconjunto da Public Suffix List)
     private static final Set<String> MULTI_LEVEL_SUFFIXES = new HashSet<>(Arrays.asList(
             "com.br", "net.br", "org.br", "gov.br", "edu.br", "art.br", "blog.br", "app.br",
@@ -141,6 +147,13 @@ final class OfflineAnalyzer {
         if (URL_SHORTENERS.contains(registered)) {
             score += 30.0;
             reasons.add("O link é encurtado e esconde o endereço verdadeiro.");
+        }
+
+        // 4c. Terminação de domínio barata
+        String tld = registered.substring(registered.lastIndexOf('.') + 1);
+        if (SUSPICIOUS_TLDS.contains(tld)) {
+            score += 15.0;
+            reasons.add("O endereço termina de um jeito muito usado em sites de golpe.");
         }
 
         // 6. Sem conexão segura (offline só é possível verificar o esquema https)

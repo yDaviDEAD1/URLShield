@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 
@@ -70,65 +70,70 @@
                     <svg width="20" height="20" aria-hidden="true"><use href="#i-contrast"/></svg>
                     Alto contraste
                 </button>
-                <a href="#area-tecnica" class="tool-link">Área técnica</a>
+                <a href="#como-funciona" class="tool-link">Como funciona</a>
             </nav>
         </div>
     </header>
 
     <main>
         <section class="hero">
-            <div class="container">
-                <h1 class="hero-title">Recebeu um link?<br><span class="stop-word">Pare</span> e confira antes.</h1>
-                <p class="hero-lead">Cole o link que chegou por WhatsApp, SMS ou e-mail. A gente confere sem abrir o site e responde com uma placa.</p>
+            <div class="container hero-grid">
+                <div>
+                    <p class="hero-kicker">Chegou uma mensagem assim?</p>
+                    <h1 class="hero-title">Antes de tocar no link, deixa a gente conferir.</h1>
+                    <p class="hero-lead">Cole o link que chegou por WhatsApp, SMS ou e-mail. A gente confere sem abrir o site e responde com uma placa que você já conhece.</p>
 
-                <form id="checker" class="checker" novalidate>
-                    <label for="url-input" class="sr-only">Link que você recebeu</label>
-                    <input
-                        type="text"
-                        id="url-input"
-                        class="checker-input"
-                        placeholder="Cole aqui o link que você recebeu"
-                        inputmode="url"
-                        autocomplete="off"
-                        autocapitalize="off"
-                        spellcheck="false"
-                        aria-describedby="checker-error"
-                    >
-                    <div class="checker-actions">
-                        <button id="paste-btn" type="button" class="btn">
-                            <svg width="22" height="22" aria-hidden="true"><use href="#i-paste"/></svg>Colar
-                        </button>
-                        <button id="voice-btn" type="button" class="btn">
-                            <svg width="22" height="22" aria-hidden="true"><use href="#i-mic"/></svg><span id="voice-btn-text">Falar</span>
-                        </button>
-                        <button id="scan-btn" type="submit" class="btn btn-primary">
-                            Conferir<svg width="22" height="22" aria-hidden="true"><use href="#i-arrow"/></svg>
-                        </button>
+                    <form id="checker" class="checker" novalidate>
+                        <label for="url-input" class="sr-only">Link que você recebeu</label>
+                        <input
+                            type="text"
+                            id="url-input"
+                            class="checker-input"
+                            placeholder="Cole aqui o link que você recebeu"
+                            inputmode="url"
+                            autocomplete="off"
+                            autocapitalize="off"
+                            spellcheck="false"
+                            aria-describedby="checker-error"
+                        >
+                        <div class="checker-actions">
+                            <button id="paste-btn" type="button" class="btn">
+                                <svg width="22" height="22" aria-hidden="true"><use href="#i-paste"/></svg>Colar
+                            </button>
+                            <button id="voice-btn" type="button" class="btn">
+                                <svg width="22" height="22" aria-hidden="true"><use href="#i-mic"/></svg><span id="voice-btn-text">Falar</span>
+                            </button>
+                            <button id="scan-btn" type="submit" class="btn btn-primary">
+                                Conferir<svg width="22" height="22" aria-hidden="true"><use href="#i-arrow"/></svg>
+                            </button>
+                        </div>
+                    </form>
+                    <p id="checker-error" class="checker-error" role="alert"></p>
+                    <p class="trust-line">
+                        <svg width="18" height="18" aria-hidden="true"><use href="#i-lock"/></svg>
+                        Não abrimos o site durante a análise · Grátis · Sem cadastro
+                    </p>
+                </div>
+
+                <!-- Ilustração: um golpe real com a placa fincada ao lado -->
+                <div class="scene" aria-hidden="true">
+                    <div class="notif notif-back">
+                        <div class="notif-head"><span class="notif-app">✉</span>Mensagens<span class="notif-time">ontem</span></div>
+                        <div class="notif-from">Correios</div>
+                        <div class="notif-text">Sua encomenda está retida. Pague a taxa de R$ 8,90…</div>
                     </div>
-                </form>
-                <p id="checker-error" class="checker-error" role="alert"></p>
-                <p class="trust-line">
-                    <svg width="18" height="18" aria-hidden="true"><use href="#i-lock"/></svg>
-                    Não abrimos o site durante a análise.
-                </p>
-
-                <section class="legend" aria-labelledby="legend-title">
-                    <h2 id="legend-title" class="section-kicker">Como ler a resposta</h2>
-                    <ul class="legend-row">
-                        <li class="legend-item">
-                            <svg width="72" height="72" aria-hidden="true"><use href="#sign-stop"/></svg>
-                            <div><strong>Pare</strong>É golpe. Não abra o link.</div>
-                        </li>
-                        <li class="legend-item">
-                            <svg width="78" height="78" aria-hidden="true"><use href="#sign-warn"/></svg>
-                            <div><strong>Atenção</strong>Pode ser golpe. Só abra se esperava.</div>
-                        </li>
-                        <li class="legend-item">
-                            <svg width="96" height="60" aria-hidden="true"><use href="#sign-go"/></svg>
-                            <div><strong>Pode seguir</strong>Sem sinais de golpe.</div>
-                        </li>
-                    </ul>
-                </section>
+                    <div class="notif notif-front">
+                        <div class="notif-head"><span class="notif-app">✉</span>Mensagens<span class="notif-time">agora</span></div>
+                        <div class="notif-from">+55 61 9 9812-4471</div>
+                        <div class="notif-text">CAIXA: Seu saque do FGTS de R$ 1.284,90 está liberado. Confirme seus dados até hoje: <span class="notif-link">caixa-gov-fgts.top/saque</span></div>
+                    </div>
+                    <div class="scene-callout"><strong>Não abra este link.</strong>Ele finge ser a Caixa. O site oficial é caixa.gov.br.</div>
+                    <div class="post post-hero">
+                        <svg class="post-sign" viewBox="0 0 100 100"><use href="#sign-stop"/></svg>
+                        <span class="post-pole"></span>
+                        <span class="post-base"></span>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -201,24 +206,93 @@
             </div>
         </section>
 
-        <!-- Área técnica -->
-        <section id="area-tecnica" class="tech-area">
+        <!-- Educação: reconhecer os golpes mais comuns -->
+        <section id="proteja-se" class="protect" aria-labelledby="protect-title">
             <div class="container">
-                <h2 class="tech-title">Área técnica</h2>
-                <p class="tech-lead">Como o URL Shield decide qual placa mostrar. Cada link passa por quatro camadas de análise antes do veredito.</p>
+                <h2 id="protect-title" class="section-title">Proteja-se dos golpes mais comuns</h2>
+                <p class="section-lead">São estas as mensagens que mais enganam hoje. Veja como reconhecer cada uma.</p>
+                <ul class="scam-grid">
+                    <li class="scam">
+                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Taxa dos Correios</h3><span>por SMS</span></div></div>
+                        <p class="scam-text">Sua encomenda está retida. Pague a taxa de R$ 8,90 para liberar: <span class="scam-link">correios-rastreio.shop/taxa</span></p>
+                        <p class="scam-tip"><strong>Como reconhecer</strong>Os Correios não cobram taxa por mensagem. O site oficial termina em <code>correios.com.br</code>.</p>
+                        <button type="button" class="link-btn scam-try" data-example="https://correios-rastreio.shop/taxa">Conferir este exemplo<svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                    </li>
+                    <li class="scam">
+                        <div class="scam-kind"><svg width="40" height="40" aria-hidden="true"><use href="#sign-warn"/></svg><div><h3>“Troquei de número”</h3><span>no WhatsApp</span></div></div>
+                        <p class="scam-text">Oi mãe, troquei de número! Me ajuda com um Pix? Te explico aqui: <span class="scam-link">bit.ly/3abc</span></p>
+                        <p class="scam-tip"><strong>Como reconhecer</strong>Antes de qualquer Pix, ligue para o número antigo da pessoa e confirme por voz.</p>
+                        <button type="button" class="link-btn scam-try" data-example="https://bit.ly/3abc">Conferir este exemplo<svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                    </li>
+                    <li class="scam">
+                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Compra que você não fez</h3><span>por e-mail</span></div></div>
+                        <p class="scam-text">Detectamos uma compra de R$ 2.390. Se não foi você, cancele: <span class="scam-link">nubank-cliente.com</span></p>
+                        <p class="scam-tip"><strong>Como reconhecer</strong>O susto é proposital. Não clique: abra o aplicativo do banco que já está no seu celular.</p>
+                        <button type="button" class="link-btn scam-try" data-example="https://nubank-cliente.com">Conferir este exemplo<svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                    </li>
+                    <li class="scam">
+                        <div class="scam-kind"><svg width="38" height="38" aria-hidden="true"><use href="#sign-stop"/></svg><div><h3>Dinheiro do governo</h3><span>por SMS</span></div></div>
+                        <p class="scam-text">Você tem R$ 1.284 de FGTS para sacar. Confirme seus dados até hoje: <span class="scam-link">caixa-gov-fgts.top</span></p>
+                        <p class="scam-tip"><strong>Como reconhecer</strong>Sites do governo terminam em <code>gov.br</code>. Prazo curto e pressa são sinal de golpe.</p>
+                        <button type="button" class="link-btn scam-try" data-example="http://caixa-gov-fgts.top/saque">Conferir este exemplo<svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+                    </li>
+                </ul>
+            </div>
+        </section>
 
-                <ol class="layers">
-                    <li><strong>Análise do endereço</strong>Distância de Levenshtein contra marcas conhecidas, entropia de Shannon, letras de outros alfabetos (homógrafos), leetspeak e encurtadores.</li>
-                    <li><strong>Infraestrutura</strong>Idade do domínio (WHOIS), certificado SSL/TLS e registros DNS.</li>
-                    <li><strong>Inspeção da página</strong>Acesso isolado à página para procurar campos de senha e cartão e frases típicas de golpe.</li>
-                    <li><strong>Pontuação</strong>Os sinais somam pontos de risco: até 25 é “Pode seguir”, até 65 é “Atenção” e acima disso é “Pare”.</li>
+        <section class="legend" aria-labelledby="legend-title">
+            <div class="container legend-grid">
+                <h2 id="legend-title" class="section-title">Como ler a resposta</h2>
+                <div class="legend-item">
+                    <div class="post post-small"><svg class="post-sign" viewBox="0 0 100 100" aria-hidden="true"><use href="#sign-stop"/></svg><span class="post-pole"></span></div>
+                    <p><strong>Pare</strong>É golpe. Não abra e apague a mensagem.</p>
+                </div>
+                <div class="legend-item">
+                    <div class="post post-small"><svg class="post-sign" viewBox="0 0 100 100" aria-hidden="true"><use href="#sign-warn"/></svg><span class="post-pole"></span></div>
+                    <p><strong>Atenção</strong>Pode ser golpe. Só abra se esperava.</p>
+                </div>
+                <div class="legend-item">
+                    <div class="post post-small post-wide"><svg class="post-sign" viewBox="0 0 160 100" aria-hidden="true"><use href="#sign-go"/></svg><span class="post-pole"></span></div>
+                    <p><strong>Pode seguir</strong>Sem sinais de golpe. Continue atento.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Como funciona: as 4 camadas como marcos de uma estrada -->
+        <section id="como-funciona" class="road-section" aria-labelledby="road-title">
+            <div class="container">
+                <h2 id="road-title" class="section-title">O caminho que cada link percorre</h2>
+                <p class="section-lead">Quatro paradas antes da placa. Para quem quer entender (ou avaliar) como funciona.</p>
+                <div class="road" aria-hidden="true"></div>
+                <ol class="kms">
+                    <li class="km">
+                        <span class="km-post" aria-hidden="true"><small>KM</small>1</span>
+                        <h3>O endereço</h3>
+                        <p>Distância de Levenshtein contra marcas conhecidas, entropia de Shannon, letras de outro alfabeto e leetspeak.</p>
+                        <code>paypa1 → paypal · d = 1</code>
+                    </li>
+                    <li class="km">
+                        <span class="km-post" aria-hidden="true"><small>KM</small>2</span>
+                        <h3>A infraestrutura</h3>
+                        <p>Idade do domínio (WHOIS), certificado SSL/TLS e registros DNS.</p>
+                        <code>domínio criado há 3 dias</code>
+                    </li>
+                    <li class="km">
+                        <span class="km-post" aria-hidden="true"><small>KM</small>3</span>
+                        <h3>A página</h3>
+                        <p>Acesso isolado, sem você, procurando campo de senha, de cartão e frases de golpe.</p>
+                        <code>input[type=password]</code>
+                    </li>
+                    <li class="km">
+                        <span class="km-post" aria-hidden="true"><small>KM</small>4</span>
+                        <h3>A pontuação</h3>
+                        <p>Cada sinal soma pontos. Até 25 é “Pode seguir”, até 65 é “Atenção” e acima disso é “Pare”.</p>
+                        <code>40 + 15 + 15 = 70 → PARE</code>
+                    </li>
                 </ol>
 
-                <div class="telegram">
-                    <div class="telegram-text">
-                        <h3 class="section-kicker">Também no Telegram</h3>
-                        <p>O mesmo verificador responde por chat. Teste o robô aqui:</p>
-                    </div>
+                <details class="telegram">
+                    <summary>Também responde pelo Telegram: testar o robô</summary>
                     <div class="chat" aria-label="Simulador do robô do Telegram">
                         <div class="chat-top">
                             <svg width="28" height="28" aria-hidden="true"><use href="#logo"/></svg>
@@ -235,7 +309,7 @@
                             </button>
                         </form>
                     </div>
-                </div>
+                </details>
             </div>
         </section>
     </main>
@@ -245,10 +319,10 @@
             <span class="brand brand-small">
                 <svg width="26" height="26" aria-hidden="true"><use href="#logo"/></svg>URL Shield
             </span>
-            <span>Verificação matemática e heurística de links · Trabalho de Conclusão de Curso</span>
+            <span><a href="https://github.com/yDaviDEAD1/URLShield" rel="noopener">Código no GitHub</a> · Trabalho de Conclusão de Curso</span>
         </div>
     </footer>
 
-    <script src="app.js?v=3"></script>
+    <script src="app.js?v=6"></script>
 </body>
 </html>

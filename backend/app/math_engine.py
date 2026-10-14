@@ -29,6 +29,12 @@ URL_SHORTENERS = [
     "rebrand.ly", "shorturl.at", "encurtador.com.br", "tiny.cc", "rb.gy", "s.id"
 ]
 
+# Terminações baratas muito usadas em golpes (domínios descartáveis)
+SUSPICIOUS_TLDS = [
+    "top", "xyz", "shop", "online", "site", "click", "live", "icu", "buzz", "cfd",
+    "sbs", "rest", "monster", "quest", "cyou", "bond", "lol", "store", "vip", "work"
+]
+
 # Substituições comuns de caracteres usadas em imitações (leetspeak)
 LEET_MAP = str.maketrans({"0": "o", "1": "l", "3": "e", "4": "a", "5": "s", "7": "t", "8": "b", "@": "a", "$": "s"})
 
@@ -208,5 +214,7 @@ def analyze_url_lexical(url: str) -> Dict[str, Any]:
         "homograph_reason": homograph_reason,
         "typosquat_info": typosquat_info,
         "is_raw_ip": is_ip,
-        "is_url_shortener": domain_full.lower() in URL_SHORTENERS
+        "is_url_shortener": domain_full.lower() in URL_SHORTENERS,
+        "tld": extracted.suffix.lower(),
+        "is_suspicious_tld": extracted.suffix.lower() in SUSPICIOUS_TLDS
     }

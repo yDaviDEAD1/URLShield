@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>URL Shield — site v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --asphalt: #1D1F22; --asphalt-2: #2A2D31; --page: #F3F3F0; --card: #FFFFFF;
+    --ink: #17181A; --ink-2: #4B4E53; --ink-3: #6E706B; --line: #D6D6D0;
+    --stop: #C8102E; --yellow: #F5C400; --green: #0A6B3B;
+    --cond: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    --sans: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 2080px; background: #BEBEB7; font-family: var(--sans); color: var(--ink); padding: 40px; display: flex; gap: 40px; align-items: flex-start; }
+  .label { font-size: 15px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #4E504B; margin-bottom: 10px; }
+
+  /* ---------- página desktop ---------- */
+  .desk { width: 1440px; background: var(--page); border-radius: 12px; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45); }
+  .chrome { height: 38px; background: #E2E2DD; display: flex; align-items: center; gap: 8px; padding: 0 16px; }
+  .chrome i { width: 12px; height: 12px; border-radius: 50%; background: #BDBDB6; }
+  .chrome .url { margin-left: 16px; width: 520px; height: 24px; background: #F5F5F2; border-radius: 6px; font-size: 13px; color: #6E706B; display: flex; align-items: center; padding-left: 12px; }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; padding: 18px 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-family: var(--cond); font-weight: 800; font-size: 28px; letter-spacing: .3px; }
+  .tools { display: flex; gap: 10px; align-items: center; font-size: 16px; }
+  .tool { border: 2px solid var(--ink); border-radius: 8px; padding: 8px 14px; font-weight: 700; background: var(--card); }
+  .tool.link { border: none; background: none; font-weight: 400; color: var(--ink-2); text-decoration: underline; text-underline-offset: 4px; }
+
+  /* hero: um golpe de verdade, com a placa fincada no link */
+  .hero { display: grid; grid-template-columns: 1fr 560px; gap: 56px; padding: 40px 64px 64px; align-items: center; }
+  .kicker { font-family: var(--cond); font-weight: 700; font-size: 22px; color: var(--stop); letter-spacing: .4px; }
+  .hero h1 { font-family: var(--cond); font-weight: 700; font-size: 84px; line-height: .95; letter-spacing: -.5px; margin-top: 10px; }
+  .hero .lead { font-size: 22px; line-height: 1.5; color: var(--ink-2); margin: 20px 0 30px; max-width: 620px; }
+  .checker { display: flex; gap: 10px; flex-wrap: wrap; }
+  .field { flex: 1 1 100%; height: 70px; border: 3px solid var(--ink); border-radius: 12px; background: var(--card); font-size: 22px; color: #85877F; display: flex; align-items: center; padding: 0 20px; }
+  .btn { height: 70px; padding: 0 22px; border: 3px solid var(--ink); border-radius: 12px; background: var(--card); font-weight: 700; font-size: 20px; display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .btn.primary { background: var(--ink); color: #fff; font-size: 22px; flex: 1; justify-content: center; }
+  .trust { margin-top: 14px; font-size: 16px; color: var(--ink-3); }
+
+  .scene { position: relative; height: 560px; }
+  .phone-msg { position: absolute; left: 0; top: 40px; width: 430px; background: #E9E4DC; border-radius: 28px; padding: 18px 18px 28px; box-shadow: 0 24px 50px -24px rgba(0,0,0,.4); border: 8px solid #17181A; }
+  .msg-head { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #D3CCC0; margin-bottom: 14px; font-size: 15px; }
+  .msg-head .av { width: 34px; height: 34px; border-radius: 50%; background: #B9C3CF; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+  .msg-head b { display: block; font-size: 16px; }
+  .msg-head small { color: #6E706B; }
+  .sms { background: #fff; border-radius: 16px 16px 16px 4px; padding: 14px 16px; font-size: 19px; line-height: 1.45; max-width: 92%; }
+  .sms .lnk { color: #1B5FAA; text-decoration: underline; word-break: break-all; position: relative; background: rgba(200,16,46,.12); outline: 2px solid var(--stop); outline-offset: 2px; border-radius: 3px; }
+  .sms small { display: block; text-align: right; color: #8E8E8E; font-size: 12px; margin-top: 4px; }
+  .sms.second { margin-top: 10px; max-width: 70%; }
+  .post-sign { position: absolute; right: 8px; top: 120px; display: flex; flex-direction: column; align-items: center; }
+  .post-sign .pole { width: 14px; height: 250px; background: linear-gradient(90deg, #8F9399, #C9CCD0 45%, #7D8187); border-radius: 3px; margin-top: -6px; }
+  .post-sign .base { width: 90px; height: 14px; border-radius: 50%; background: rgba(0,0,0,.18); margin-top: -6px; }
+  .callout { position: absolute; left: 70px; top: 418px; background: var(--asphalt); color: #fff; border-radius: 12px; padding: 12px 16px; font-size: 16px; line-height: 1.35; width: 230px; box-shadow: 0 14px 30px -14px rgba(0,0,0,.5); }
+  .callout b { font-family: var(--cond); font-size: 22px; letter-spacing: .3px; display: block; }
+  .callout::after { content: ""; position: absolute; left: 60px; top: -9px; border: 9px solid transparent; border-bottom-color: var(--asphalt); border-top: 0; }
+
+  /* golpes reais para testar */
+  .examples { background: var(--card); border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink); padding: 48px 64px 54px; }
+  .sec-title { font-family: var(--cond); font-weight: 700; font-size: 44px; line-height: 1; }
+  .sec-lead { font-size: 19px; color: var(--ink-2); margin: 10px 0 28px; }
+  .ex-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .ex { border: 2px solid var(--ink); border-radius: 16px; padding: 18px; background: var(--page); display: flex; flex-direction: column; gap: 12px; position: relative; }
+  .ex-from { font-size: 14px; color: var(--ink-3); display: flex; justify-content: space-between; }
+  .ex-from b { color: var(--ink); }
+  .ex-text { font-size: 17px; line-height: 1.45; background: #fff; border-radius: 12px 12px 12px 4px; padding: 12px 14px; }
+  .ex-text u { color: #1B5FAA; word-break: break-all; }
+  .ex-foot { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+  .ex-try { font-weight: 700; font-size: 17px; display: inline-flex; gap: 8px; align-items: center; text-decoration: underline; text-underline-offset: 4px; }
+  .ex-sign { font-family: var(--cond); font-weight: 800; font-size: 15px; letter-spacing: .5px; display: inline-flex; align-items: center; gap: 6px; color: var(--ink-3); }
+
+  /* como ler: placas fincadas */
+  .legend { padding: 46px 64px 40px; display: grid; grid-template-columns: 300px repeat(3, 1fr); gap: 30px; align-items: end; }
+  .legend .sec-title { font-size: 40px; align-self: center; }
+  .lg { display: flex; gap: 16px; align-items: flex-end; }
+  .lg-sign { display: flex; flex-direction: column; align-items: center; flex: none; }
+  .lg-sign .pole { width: 8px; height: 46px; background: linear-gradient(90deg, #8F9399, #C9CCD0 45%, #7D8187); margin-top: -4px; }
+  .lg b { display: block; font-family: var(--cond); font-size: 28px; font-weight: 800; }
+  .lg span { font-size: 17px; color: var(--ink-2); line-height: 1.35; }
+
+  /* área técnica como estrada */
+  .tech { background: var(--asphalt); color: #fff; padding: 52px 64px 60px; }
+  .tech .sec-title { color: #fff; }
+  .tech .sec-lead { color: #CFCFCA; }
+  .road { position: relative; margin-top: 30px; height: 26px; background: #2E3135; border-radius: 4px; }
+  .road::before { content: ""; position: absolute; left: 0; right: 0; top: 11px; height: 4px; background: repeating-linear-gradient(90deg, var(--yellow) 0 46px, transparent 46px 80px); }
+  .kms { display: grid; grid-template-columns: repeat(4, 1fr) 260px; gap: 26px; margin-top: -40px; position: relative; }
+  .km { padding-top: 0; }
+  .km-post { width: 78px; background: #fff; color: var(--ink); border-radius: 8px 8px 4px 4px; text-align: center; padding: 6px 0 8px; font-family: var(--cond); font-weight: 800; line-height: 1; border: 3px solid #fff; box-shadow: 0 0 0 2px var(--ink) inset; margin-bottom: 18px; }
+  .km-post small { display: block; font-size: 13px; letter-spacing: 1px; }
+  .km-post span { font-size: 30px; }
+  .km h3 { font-family: var(--cond); font-weight: 700; font-size: 28px; }
+  .km p { font-size: 16px; color: #D2D2CD; line-height: 1.5; margin-top: 6px; }
+  .km code { font-family: ui-monospace, Consolas, monospace; font-size: 14px; color: var(--yellow); }
+  .finish { display: flex; gap: 12px; align-items: flex-end; padding-top: 4px; }
+  .tech-foot { margin-top: 40px; padding-top: 24px; border-top: 1px solid #3A3D42; display: flex; justify-content: space-between; font-size: 17px; color: #CFCFCA; }
+  .tech-foot u { color: #fff; text-underline-offset: 4px; }
+
+  /* ---------- celular ---------- */
+  .mob { width: 400px; }
+  .mob .frame { background: #0E0F10; border-radius: 44px; padding: 10px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.55); }
+  .mob .screen { background: var(--page); border-radius: 34px; overflow: hidden; height: 820px; }
+  .m-nav { display: flex; justify-content: space-between; align-items: center; padding: 34px 18px 10px; }
+  .m-nav .brand { font-size: 22px; }
+  .m-hero { padding: 6px 18px 0; }
+  .m-hero .kicker { font-size: 17px; }
+  .m-hero h1 { font-family: var(--cond); font-weight: 700; font-size: 44px; line-height: .95; margin-top: 6px; }
+  .m-scene { position: relative; height: 230px; margin: 14px 0 4px; }
+  .m-scene .phone-msg { width: 270px; top: 6px; padding: 12px 12px 16px; border-width: 6px; border-radius: 22px; }
+  .m-scene .sms { font-size: 14.5px; padding: 10px 12px; }
+  .m-scene .msg-head { font-size: 12px; margin-bottom: 8px; padding-bottom: 8px; }
+  .m-scene .post-sign { right: 4px; top: 54px; }
+  .m-scene .post-sign .pole { height: 60px; width: 9px; }
+  .m-field { height: 58px; border: 3px solid var(--ink); border-radius: 12px; background: #fff; font-size: 17px; color: #85877F; display: flex; align-items: center; padding: 0 14px; margin: 0 18px; }
+  .m-row { display: flex; gap: 8px; margin: 8px 18px 0; }
+  .m-row .btn { flex: 1; height: 56px; font-size: 17px; justify-content: center; padding: 0; }
+  .m-go { margin: 8px 18px 0; height: 58px; border-radius: 12px; background: var(--ink); color: #fff; font-weight: 700; font-size: 19px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .m-ex { margin: 22px 18px 0; font-family: var(--cond); font-weight: 700; font-size: 26px; }
+  .m-chips { display: flex; gap: 8px; margin: 10px 18px 0; overflow: hidden; }
+  .m-chip { flex: none; border: 2px solid var(--ink); border-radius: 12px; padding: 10px 12px; font-size: 14px; background: #fff; width: 160px; line-height: 1.35; }
+  .m-chip b { display: block; font-size: 13px; color: var(--ink-3); }
+
+  .notes { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+  .note { background: #F7F7F4; border-radius: 12px; padding: 14px 16px; font-size: 15.5px; line-height: 1.45; color: var(--ink-2); }
+  .note b { display: block; color: var(--ink); font-size: 16px; margin-bottom: 2px; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="stop" viewBox="0 0 100 100">
+      <polygon points="29.3,0 70.7,0 100,29.3 100,70.7 70.7,100 29.3,100 0,70.7 0,29.3" fill="#fff"/>
+      <polygon points="30.5,3 69.5,3 97,30.5 97,69.5 69.5,97 30.5,97 3,69.5 3,30.5" fill="#C8102E"/>
+      <polygon points="32.3,7.5 67.7,7.5 92.5,32.3 92.5,67.7 67.7,92.5 32.3,92.5 7.5,67.7 7.5,32.3" fill="none" stroke="#fff" stroke-width="2.2"/>
+      <text x="50" y="61" text-anchor="middle" font-family="Barlow Condensed" font-weight="800" font-size="31" fill="#fff">PARE</text>
+    </symbol>
+    <symbol id="warn" viewBox="0 0 100 100">
+      <rect x="17" y="17" width="66" height="66" rx="6" transform="rotate(45 50 50)" fill="#17181A"/>
+      <rect x="20.5" y="20.5" width="59" height="59" rx="4" transform="rotate(45 50 50)" fill="#F5C400"/>
+      <rect x="24" y="24" width="52" height="52" rx="3" transform="rotate(45 50 50)" fill="none" stroke="#17181A" stroke-width="2"/>
+      <rect x="46.2" y="27" width="7.6" height="31" rx="3" fill="#17181A"/><circle cx="50" cy="68" r="4.6" fill="#17181A"/>
+    </symbol>
+    <symbol id="go" viewBox="0 0 160 100">
+      <rect width="160" height="100" rx="9" fill="#fff"/><rect x="3" y="3" width="154" height="94" rx="7" fill="#0A6B3B"/>
+      <rect x="7.5" y="7.5" width="145" height="85" rx="5" fill="none" stroke="#fff" stroke-width="2.2"/>
+      <path d="M80 72V30M64 46l16-16 16 16" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="logo" viewBox="0 0 40 40"><polygon points="11.7,0 28.3,0 40,11.7 40,28.3 28.3,40 11.7,40 0,28.3 0,11.7" fill="#17181A"/><path d="M13 20.5l5 5L28 14.5" fill="none" stroke="#F5C400" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<div>
+  <div class="label">Desktop · página inicial (completa)</div>
+  <div class="desk">
+    <div class="chrome"><i></i><i></i><i></i><div class="url">urlshield-api-x9et.onrender.com</div></div>
+    <nav class="nav">
+      <div class="brand"><svg width="36" height="36"><use href="#logo"/></svg>URL Shield</div>
+      <div class="tools"><span class="tool">Letra maior</span><span class="tool">◐ Alto contraste</span><span class="tool link">Como funciona</span></div>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <div class="kicker">Chegou uma mensagem assim?</div>
+        <h1>Antes de tocar no link, deixa a gente conferir.</h1>
+        <p class="lead">Cole o link que chegou por WhatsApp, SMS ou e-mail. A gente confere sem abrir o site e responde com uma placa que você já conhece.</p>
+        <div class="checker">
+          <div class="field">Cole aqui o link que você recebeu</div>
+          <span class="btn">Colar</span><span class="btn">Falar</span>
+          <span class="btn primary">Conferir <svg width="22" height="22"><use href="#arrow"/></svg></span>
+        </div>
+        <p class="trust">Não abrimos o site durante a análise · Grátis · Sem cadastro</p>
+      </div>
+      <div class="scene">
+        <div class="phone-msg">
+          <div class="msg-head"><div class="av">CX</div><div><b>+55 61 9 9812-4471</b><small>SMS · agora</small></div></div>
+          <div class="sms">CAIXA: Seu saque do FGTS de R$ 1.284,90 está liberado. Confirme seus dados até hoje: <span class="lnk">caixa-gov-fgts.top/saque</span><small>09:12</small></div>
+          
+        </div>
+        <div class="callout"><b>Não abra este link.</b>Ele finge ser a Caixa. O site oficial é caixa.gov.br.</div>
+        <div class="post-sign"><svg width="170" height="170"><use href="#stop"/></svg><div class="pole"></div><div class="base"></div></div>
+      </div>
+    </section>
+
+    <section class="examples">
+      <h2 class="sec-title">Teste com golpes que estão circulando</h2>
+      <p class="sec-lead">Toque em uma mensagem para ver como o URL Shield responde. Nenhum desses sites é aberto.</p>
+      <div class="ex-row">
+        <div class="ex">
+          <div class="ex-from"><b>SMS · “Correios”</b><span>ontem</span></div>
+          <div class="ex-text">Sua encomenda está retida. Pague a taxa de R$ 8,90 para liberar: <u>correios-rastreio.shop/taxa</u></div>
+          <div class="ex-foot"><span class="ex-try">Conferir <svg width="18" height="18"><use href="#arrow"/></svg></span><span class="ex-sign"><svg width="30" height="30"><use href="#stop"/></svg>PARE</span></div>
+        </div>
+        <div class="ex">
+          <div class="ex-from"><b>WhatsApp · número novo</b><span>08:40</span></div>
+          <div class="ex-text">Oi mãe, troquei de número! Me ajuda com um Pix? Te explico aqui: <u>bit.ly/3abc</u></div>
+          <div class="ex-foot"><span class="ex-try">Conferir <svg width="18" height="18"><use href="#arrow"/></svg></span><span class="ex-sign"><svg width="32" height="32"><use href="#warn"/></svg>ATENÇÃO</span></div>
+        </div>
+        <div class="ex">
+          <div class="ex-from"><b>E-mail · “Nubank”</b><span>terça</span></div>
+          <div class="ex-text">Detectamos uma compra de R$ 2.390. Se não foi você, cancele: <u>nubank-cliente.com</u></div>
+          <div class="ex-foot"><span class="ex-try">Conferir <svg width="18" height="18"><use href="#arrow"/></svg></span><span class="ex-sign"><svg width="30" height="30"><use href="#stop"/></svg>PARE</span></div>
+        </div>
+        <div class="ex">
+          <div class="ex-from"><b>WhatsApp · Filho</b><span>10:03</span></div>
+          <div class="ex-text">Mãe, o boleto do cartão está no app do banco. Ou entra por aqui: <u>itau.com.br</u></div>
+          <div class="ex-foot"><span class="ex-try">Conferir <svg width="18" height="18"><use href="#arrow"/></svg></span><span class="ex-sign"><svg width="40" height="25"><use href="#go"/></svg>PODE SEGUIR</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="legend">
+      <h2 class="sec-title">Como ler a resposta</h2>
+      <div class="lg"><div class="lg-sign"><svg width="80" height="80"><use href="#stop"/></svg><div class="pole"></div></div><div><b>PARE</b><span>É golpe. Não abra e apague a mensagem.</span></div></div>
+      <div class="lg"><div class="lg-sign"><svg width="86" height="86"><use href="#warn"/></svg><div class="pole"></div></div><div><b>ATENÇÃO</b><span>Pode ser golpe. Só abra se esperava.</span></div></div>
+      <div class="lg"><div class="lg-sign"><svg width="110" height="68"><use href="#go"/></svg><div class="pole"></div></div><div><b>PODE SEGUIR</b><span>Sem sinais de golpe. Continue atento.</span></div></div>
+    </section>
+
+    <section class="tech">
+      <h2 class="sec-title">O caminho que cada link percorre</h2>
+      <p class="sec-lead">Quatro paradas antes da placa. Para quem quer entender (ou avaliar) como funciona.</p>
+      <div class="road"></div>
+      <div class="kms">
+        <div class="km"><div class="km-post"><small>KM</small><span>1</span></div><h3>O endereço</h3><p>Distância de Levenshtein contra marcas conhecidas, entropia de Shannon, letras de outro alfabeto e leetspeak.<br><code>paypa1 → paypal · d = 1</code></p></div>
+        <div class="km"><div class="km-post"><small>KM</small><span>2</span></div><h3>A infraestrutura</h3><p>Idade do domínio (WHOIS), certificado SSL/TLS e registros DNS.<br><code>domínio criado há 3 dias</code></p></div>
+        <div class="km"><div class="km-post"><small>KM</small><span>3</span></div><h3>A página</h3><p>Acesso isolado, sem você, procurando campo de senha, de cartão e frases de golpe.<br><code>input[type=password]</code></p></div>
+        <div class="km"><div class="km-post"><small>KM</small><span>4</span></div><h3>A pontuação</h3><p>Cada sinal soma pontos. Até 25 é “Pode seguir”, até 65 é “Atenção” e acima disso é “Pare”.<br><code>40 + 15 + 15 = 70 → PARE</code></p></div>
+        <div class="finish"><svg width="74" height="74"><use href="#stop"/></svg><svg width="80" height="80"><use href="#warn"/></svg><svg width="96" height="60"><use href="#go"/></svg></div>
+      </div>
+      <div class="tech-foot"><span>Também responde pelo Telegram · <u>testar o robô</u></span><span><u>Ver o código no GitHub</u> · Trabalho de Conclusão de Curso</span></div>
+    </section>
+  </div>
+</div>
+
+<div class="mob">
+  <div class="label">Celular · topo da página</div>
+  <div class="frame"><div class="screen">
+    <div class="m-nav"><div class="brand"><svg width="30" height="30"><use href="#logo"/></svg>URL Shield</div><span class="tool" style="font-size:14px;padding:6px 10px">Letra maior</span></div>
+    <div class="m-hero">
+      <div class="kicker">Chegou uma mensagem assim?</div>
+      <h1>Antes de tocar no link, deixa a gente conferir.</h1>
+      <div class="m-scene">
+        <div class="phone-msg">
+          <div class="msg-head"><div class="av" style="width:26px;height:26px;font-size:11px">CX</div><div><b style="font-size:13px">+55 61 9 9812-4471</b></div></div>
+          <div class="sms">Seu saque do FGTS está liberado. Confirme: <span class="lnk">caixa-gov-fgts.top</span></div>
+        </div>
+        <div class="post-sign"><svg width="104" height="104"><use href="#stop"/></svg><div class="pole"></div></div>
+      </div>
+    </div>
+    <div class="m-field">Cole aqui o link que você recebeu</div>
+    <div class="m-row"><span class="btn">Colar</span><span class="btn">Falar</span></div>
+    <div class="m-go">Conferir <svg width="20" height="20"><use href="#arrow"/></svg></div>
+    <div class="m-ex">Teste com golpes reais</div>
+    <div class="m-chips">
+      <div class="m-chip"><b>SMS · “Correios”</b>Sua encomenda está retida. Pague a taxa…</div>
+      <div class="m-chip"><b>WhatsApp · número novo</b>Oi mãe, troquei de número!…</div>
+    </div>
+  </div></div>
+  <div class="notes">
+    <div class="note"><b>O golpe aparece antes do título</b>A pessoa reconhece a mensagem que já recebeu e entende o produto sem ler.</div>
+    <div class="note"><b>Placas fincadas em postes</b>A placa “planta” sobre o link: o conceito deixa de ser só um ícone.</div>
+    <div class="note"><b>Caixa alta só nas placas</b>Títulos em frase normal, mais fáceis de ler.</div>
+    <div class="note"><b>Área técnica = estrada</b>As 4 camadas viram marcos de quilômetro, com exemplo real de cada cálculo.</div>
+  </div>
+</div>
+</body>
+</html>

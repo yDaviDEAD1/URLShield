@@ -92,6 +92,11 @@ class TestURLShieldBackend(unittest.TestCase):
         self.assertTrue(res_cx["is_typosquat"])
         self.assertEqual(res_cx["impersonation_type"], "brand_in_domain")
 
+    def test_suspicious_tld_flagged(self):
+        lex = analyze_url_lexical("https://correios-rastreio.shop/taxa")
+        self.assertTrue(lex["is_suspicious_tld"])
+        self.assertFalse(analyze_url_lexical("https://www.correios.com.br")["is_suspicious_tld"])
+
     def test_url_shortener_flagged(self):
         self.assertTrue(analyze_url_lexical("https://bit.ly/3abc")["is_url_shortener"])
 

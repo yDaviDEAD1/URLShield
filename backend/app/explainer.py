@@ -41,6 +41,7 @@ FRIENDLY_REASONS = {
     "Alta Entropia (Aleatoriedade)": "O nome do site parece inventado às pressas.",
     "IP Numérico Direto": "O link usa números no lugar do nome de um site.",
     "Link Encurtado": "O link é encurtado e esconde o endereço verdadeiro.",
+    "Terminação Suspeita": "O endereço termina de um jeito muito usado em sites de golpe.",
     "Sem Conexão Segura (SSL)": "O site não tem o cadeado de conexão segura.",
     "Caractere '@' no Link": "O link usa um truque com \"@\" para esconder o destino verdadeiro.",
     "Excesso de Hífens": "O endereço tem muitos hífens, comum em sites falsos.",

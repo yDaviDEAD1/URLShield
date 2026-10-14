@@ -60,6 +60,15 @@ def calculate_heuristic_score(lexical_data: Dict[str, Any], network_data: Dict[s
             "description": "Este é um link encurtado, que esconde o endereço verdadeiro do site de destino."
         })
 
+    # 4c. Terminação de domínio barata, típica de sites descartáveis
+    if lexical_data.get("is_suspicious_tld"):
+        score += 15.0
+        penalties.append({
+            "category": "Terminação Suspeita",
+            "points": 15.0,
+            "description": f"O endereço termina em '.{lexical_data.get('tld')}', terminação barata muito usada em sites de golpe."
+        })
+
     # 5. Domínio Recente (< 30 dias)
     if network_data.get("is_recent_domain"):
         age = network_data.get("domain_age_days", 0)
