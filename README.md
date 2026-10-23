@@ -98,8 +98,14 @@ python -m uvicorn app.main:app --port 8000
 Depois é só abrir [http://localhost:8000](http://localhost:8000). Para rodar os testes:
 
 ```powershell
-python test_backend.py
+pip install -r requirements-dev.txt
+python -m pytest
 ```
+
+Execute esses comandos dentro de `backend/`, com o ambiente virtual ativo. A suíte
+usa a lista de sufixos públicos incluída na biblioteca e simula as consultas de
+infraestrutura dos testes de orquestração, sem depender de WHOIS, DNS ou TLS externos.
+Se houver JDK disponível, também compila e verifica o motor Java offline.
 
 Para o robô do Telegram, crie um bot com o [@BotFather](https://t.me/BotFather) e rode `python run_bot.py SEU_TOKEN`.
 

@@ -89,14 +89,14 @@ def calculate_heuristic_score(lexical_data: Dict[str, Any], network_data: Dict[s
             "description": "O site não possui um certificado de segurança válido."
         })
 
-    # 7. Símbolos Especiais em Excesso (@ ou hífens)
+    # 7. '@' na autoridade e hífens no hostname (contagens da análise léxica)
     special = lexical_data.get("special_chars", {})
     if special.get("at_symbols", 0) > 0:
         score += 20.0
         penalties.append({
             "category": "Caractere '@' no Link",
             "points": 20.0,
-            "description": "O caractere '@' na URL faz o navegador ignorar a primeira parte e redirecionar para um destino oculto."
+            "description": "O link inclui informações de usuário antes de '@'; o site de destino é o host depois desse caractere."
         })
     if special.get("hyphens", 0) > 3:
         score += 10.0

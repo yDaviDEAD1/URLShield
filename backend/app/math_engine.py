@@ -1,5 +1,6 @@
 import math
 import re
+from urllib.parse import urlsplit
 from typing import Dict, List, Any, Tuple
 import tldextract
 import Levenshtein
@@ -136,6 +137,8 @@ def calculate_typosquatting_distance(domain: str) -> Dict[str, Any]:
         for trusted in TRUSTED_DOMAINS:
             trusted_extracted = tldextract.extract(trusted)
             trusted_name = trusted_extracted.domain.lower()
+            if len(trusted_name) < 3:
+                continue  # marcas muito curtas colidem na comparação aproximada
             
             # Distância de Levenshtein
             dist = Levenshtein.distance(part, trusted_name)
@@ -186,9 +189,12 @@ def analyze_url_lexical(url: str) -> Dict[str, Any]:
     digit_count = sum(c.isdigit() for c in domain_full)
     digit_ratio = round(digit_count / max(domain_length, 1), 4)
     
+    # Userinfo pertence à autoridade; hífens relevantes pertencem ao hostname.
+    # Caminho, query e fragmento não alteram essas contagens.
+    parsed_url = urlsplit(url if "://" in url or url.startswith("//") else "//" + url)
     special_chars = {
-        "hyphens": url.count("-"),
-        "at_symbols": url.count("@"),
+        "hyphens": (parsed_url.hostname or "").count("-"),
+        "at_symbols": parsed_url.netloc.count("@"),
         "double_slashes": url.count("//") - 1 if url.count("//") > 0 else 0,
         "dots": url.count(".")
     }

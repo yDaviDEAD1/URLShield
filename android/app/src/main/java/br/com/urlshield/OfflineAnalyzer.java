@@ -162,12 +162,13 @@ final class OfflineAnalyzer {
             reasons.add("O link não usa o cadeado de conexão segura.");
         }
 
-        // 7. Símbolos especiais
-        if (url.indexOf('@') >= 0) {
+        // 7. '@' na autoridade e hífens no hostname, como no backend.
+        String authority = uri.getRawAuthority();
+        if (authority != null && authority.indexOf('@') >= 0) {
             score += 20.0;
             reasons.add("O link usa um truque com \"@\" para esconder o destino verdadeiro.");
         }
-        if (countChar(url, '-') > 3) {
+        if (countChar(host, '-') > 3) {
             score += 10.0;
             reasons.add("O endereço tem muitos hífens, comum em sites falsos.");
         }
@@ -251,6 +252,9 @@ final class OfflineAnalyzer {
         for (String part : parts) {
             for (String trusted : TRUSTED_DOMAINS) {
                 String trustedName = splitHost(trusted)[0];
+                if (trustedName.length() < 3) {
+                    continue; // marcas muito curtas colidem na comparação aproximada
+                }
                 int distance = levenshtein(part, trustedName);
                 double ratio = similarityRatio(part, trustedName);
                 if (distance > 0) {

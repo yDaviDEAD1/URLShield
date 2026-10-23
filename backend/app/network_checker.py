@@ -1,7 +1,7 @@
 import socket
 import ssl
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 import tldextract
 import dns.resolver
@@ -54,10 +54,18 @@ def get_domain_age_days(domain: str) -> Optional[int]:
         creation_date = w.creation_date
         
         if isinstance(creation_date, list):
-            creation_date = creation_date[0]
+            creation_date = next(
+                (value for value in creation_date if isinstance(value, datetime)),
+                None,
+            )
             
         if creation_date and isinstance(creation_date, datetime):
-            now = datetime.now()
+            # WHOIS sem fuso é interpretado como UTC; datas com offset são convertidas.
+            if creation_date.utcoffset() is None:
+                creation_date = creation_date.replace(tzinfo=timezone.utc)
+            else:
+                creation_date = creation_date.astimezone(timezone.utc)
+            now = datetime.now(timezone.utc)
             age_days = (now - creation_date).days
             return max(age_days, 0)
     except Exception:
