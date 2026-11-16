@@ -10,16 +10,16 @@ def generate_accessible_explanation(heuristic_data: Dict[str, Any], lexical_data
     penalties = heuristic_data.get("penalties", [])
     
     if level == "SEGURO":
-        summary = f"Não encontramos sinais fortes de golpe neste endereço. O nível de risco calculado foi de {score}%."
+        summary = f"Não encontramos sinais fortes de golpe neste endereço (pontuação {score} de 100)."
         speech_text = f"O link {domain} foi verificado. Não encontramos sinais fortes de golpe, mas continue atento a pedidos de senha, dinheiro ou dados pessoais."
         recommendation = "Você pode continuar com atenção. Nenhuma análise consegue garantir segurança total."
     elif level == "SUSPEITO":
-        summary = f"Cuidado! Este link apresenta sinais suspeitos ({score}% de risco)."
+        summary = f"Cuidado! Este link apresenta sinais suspeitos (pontuação {score} de 100)."
         speech_text = f"Cuidado. O link {domain} é suspeito. Não digite senhas ou dados bancários neste site."
         recommendation = "Evite informar dados pessoais ou fazer pagamentos neste site sem confirmar antes com um familiar."
     else:
-        summary = f"ALERTA DE PERIGO! Este link é muito provavelmente uma tentativa de golpe ({score}% de risco)."
-        speech_text = f"Alerta vermelho. O link {domain} é perigoso e parece ser um golpe. Não abra este site."
+        summary = f"Encontramos sinais fortes de golpe neste endereço (pontuação {score} de 100)."
+        speech_text = f"Atenção. O link {domain} tem sinais fortes de golpe. A recomendação é não abrir este site."
         recommendation = "Não clique no link nem forneça nenhuma informação. Apague a mensagem recebida."
 
     # Pontos de atenção simples

@@ -13,9 +13,9 @@ def calculate_heuristic_score(lexical_data: Dict[str, Any], network_data: Dict[s
         matched = typosquat.get("best_matched_domain")
         dist = typosquat.get("min_levenshtein_distance")
         if typosquat.get("impersonation_type") == "brand_in_domain":
-            description = f"O endereço usa o nome da marca '{matched}', mas não pertence à empresa oficial."
+            description = f"O endereço usa o nome '{matched}', mas não está entre os endereços oficiais conhecidos."
         else:
-            description = f"O endereço tenta se passar por '{matched}' alterando apenas {dist} caractere(s)."
+            description = f"O endereço é muito parecido com '{matched}' ({dist} caractere(s) de diferença)."
         score += 40.0
         penalties.append({
             "category": "Typosquatting (Nome Imitação)",
@@ -112,7 +112,7 @@ def calculate_heuristic_score(lexical_data: Dict[str, Any], network_data: Dict[s
         penalties.append({
             "category": "Captura de Senha em Domínio Imitação",
             "points": 25.0,
-            "description": "A página pede senha de acesso, mas o endereço não pertence à empresa oficial."
+            "description": "A página pede senha de acesso, mas o endereço não está entre os endereços oficiais conhecidos."
         })
 
     found_kw = crawl_data.get("found_suspicious_keywords", [])

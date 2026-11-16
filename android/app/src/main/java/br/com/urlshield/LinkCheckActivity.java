@@ -278,7 +278,8 @@ public final class LinkCheckActivity extends Activity implements TextToSpeech.On
         boolean imitates = !result.impersonates.isEmpty();
         if (result.isBlocked()) {
             return imitates
-                    ? "Ele está se passando por " + result.impersonates + " para enganar você."
+                    ? "O endereço se parece com " + result.impersonates
+                            + ", mas não está entre os endereços oficiais conhecidos."
                     : "Encontramos sinais fortes de golpe neste endereço.";
         }
         if (result.isAllowed()) {

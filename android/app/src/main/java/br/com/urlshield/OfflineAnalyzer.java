@@ -115,11 +115,11 @@ final class OfflineAnalyzer {
         if (impersonation != null) {
             score += 40.0;
             if ("brand_in_domain".equals(impersonation.type)) {
-                reasons.add("O endereço usa o nome da marca '" + impersonation.matched
-                        + "', mas não pertence à empresa oficial.");
+                reasons.add("O endereço usa o nome '" + impersonation.matched
+                        + "', mas não está entre os endereços oficiais conhecidos.");
             } else {
-                reasons.add("O endereço tenta se passar por '" + impersonation.matched
-                        + "' alterando apenas " + impersonation.distance + " caractere(s).");
+                reasons.add("O endereço é muito parecido com '" + impersonation.matched
+                        + "' (" + impersonation.distance + " caractere(s) de diferença).");
             }
         }
 

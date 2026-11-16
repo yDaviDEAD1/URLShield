@@ -91,19 +91,19 @@ final class AnalysisResult {
         if (OfflineAnalyzer.LEVEL_DANGEROUS.equals(report.riskLevel)) {
             verdict = "BLOCK";
             title = "Não abra este link";
-            summary = "ALERTA DE PERIGO! Este link é muito provavelmente uma tentativa de golpe (" + score + "% de risco).";
+            summary = "Encontramos sinais fortes de golpe neste endereço (pontuação " + score + " de 100).";
             recommendation = "Não clique no link nem forneça nenhuma informação. Apague a mensagem recebida.";
-            speechText = "Alerta vermelho. O link " + report.domain + " é perigoso e parece ser um golpe. Não abra este site.";
+            speechText = "Atenção. O link " + report.domain + " tem sinais fortes de golpe. A recomendação é não abrir este site.";
         } else if (OfflineAnalyzer.LEVEL_SUSPICIOUS.equals(report.riskLevel)) {
             verdict = "WARN";
             title = "Tenha cuidado";
-            summary = "Cuidado! Este link apresenta sinais suspeitos (" + score + "% de risco).";
+            summary = "Cuidado! Este link apresenta sinais suspeitos (pontuação " + score + " de 100).";
             recommendation = "Evite informar dados pessoais ou fazer pagamentos neste site sem confirmar antes com um familiar.";
             speechText = "Cuidado. O link " + report.domain + " é suspeito. Não digite senhas ou dados bancários neste site.";
         } else {
             verdict = "ALLOW";
             title = "Nenhum sinal forte de golpe";
-            summary = "Não encontramos sinais fortes de golpe neste endereço. O nível de risco calculado foi de " + score + "%.";
+            summary = "Não encontramos sinais fortes de golpe neste endereço (pontuação " + score + " de 100).";
             recommendation = "Você pode continuar com atenção. Nenhuma análise consegue garantir segurança total.";
             speechText = "O link " + report.domain + " foi verificado. Não encontramos sinais fortes de golpe, mas continue atento a pedidos de senha, dinheiro ou dados pessoais.";
         }
