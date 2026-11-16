@@ -6,7 +6,8 @@ def generate_accessible_explanation(heuristic_data: Dict[str, Any], lexical_data
     ideal para ser lido em voz alta (síntese de áudio).
     """
     level = heuristic_data.get("risk_level")
-    score = heuristic_data.get("risk_score")
+    # A pontuação é sempre múltipla de 5: exibida sem casas decimais
+    score = f"{heuristic_data.get('risk_score', 0):.0f}"
     penalties = heuristic_data.get("penalties", [])
     
     if level == "SEGURO":

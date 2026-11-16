@@ -82,7 +82,7 @@ final class AnalysisResult {
 
     /** Monta o resultado a partir do motor local, com os mesmos textos de backend/app/explainer.py e main.py. */
     static AnalysisResult fromOffline(OfflineAnalyzer.Report report) {
-        String score = String.format(Locale.US, "%.1f", report.riskScore);
+        String score = String.format(Locale.US, "%.0f", report.riskScore);
         String verdict;
         String title;
         String summary;
