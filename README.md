@@ -8,7 +8,7 @@
 
 Todo mundo conhece alguém que quase caiu. A mensagem chega no WhatsApp ou por SMS, fala de um saque do FGTS, de uma encomenda retida nos Correios, de uma compra que você não fez. O link parece de verdade. E quem mais sofre com isso são justamente as pessoas que têm menos familiaridade com a internet: nossos pais, avós, vizinhos.
 
-O URL Shield confere o link **antes** de a pessoa abrir o site e responde de um jeito que qualquer um entende: com uma placa de trânsito. **PARE** quando é golpe, **ATENÇÃO** quando é suspeito, e a placa verde de **PODE SEGUIR** mostrando para onde o link leva de verdade.
+O URL Shield confere o link **antes** de a pessoa abrir o site e responde de um jeito que qualquer um entende: com uma placa de trânsito. **PARE** quando há sinais fortes de golpe, **ATENÇÃO** quando há sinais suspeitos, e a placa verde de **PODE SEGUIR** mostrando para onde o link leva de verdade.
 
 > Projeto desenvolvido como Trabalho de Conclusão de Curso.
 
@@ -22,13 +22,13 @@ O URL Shield confere o link **antes** de a pessoa abrir o site e responde de um 
 
 ## No celular, a proteção acontece sozinha
 
-No Android, o URL Shield vira o “porteiro” dos links. A pessoa toca no link normalmente, dentro do WhatsApp, e em vez de o site abrir aparece um cartão por cima da conversa com a resposta. Se estiver tudo certo, um toque em **Abrir site** leva para o Chrome de sempre. Se for golpe, **Fechar e voltar** e pronto.
+No Android, o URL Shield vira o “porteiro” dos links. A pessoa toca no link normalmente, dentro do WhatsApp, e em vez de o site abrir aparece um cartão por cima da conversa com a resposta. Se estiver tudo certo, um toque em **Abrir site** leva para o Chrome de sempre. Se houver sinais fortes de golpe, **Fechar e voltar** e pronto.
 
 <p align="center">
   <img src="docs/img/app-popup.png" alt="Quatro telas do app: configuração, golpe dos Correios com 'Não abra este link', link encurtado com 'Tenha cuidado' e site oficial do Itaú com 'Pode abrir'" width="900">
 </p>
 
-O cartão diz **quem o link está imitando** (“Ele está se passando por correios.com.br”), explica os motivos em linguagem simples e tem dois botões pensados para quem precisa de ajuda: **Ouvir**, que lê a resposta em voz alta, e **Família**, que manda o link com a resposta para um parente conferir.
+O cartão diz **com qual marca o endereço se parece** (“O endereço se parece com correios.com.br, mas não está entre os endereços oficiais conhecidos”), explica os motivos em linguagem simples e tem dois botões pensados para quem precisa de ajuda: **Ouvir**, que lê a resposta em voz alta, e **Família**, que manda o link com a resposta para um parente conferir.
 
 Funciona até sem internet: um motor de análise roda dentro do próprio celular e, quando há conexão, o servidor completa a checagem com a idade do site e o certificado de segurança.
 

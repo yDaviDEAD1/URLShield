@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (typo.is_typosquat && typo.best_matched_domain) {
             return level === 'PERIGOSO'
-                ? `Ele está se passando por ${typo.best_matched_domain} para enganar você.`
+                ? `O endereço se parece com ${typo.best_matched_domain}, mas não está entre os endereços oficiais conhecidos.`
                 : `Ele se parece com ${typo.best_matched_domain}, mas não é o mesmo endereço.`;
         }
         if (lex.is_url_shortener) return 'Este link é encurtado. Ele esconde para onde vai levar você.';
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
         $('metric-levenshtein').textContent = typo.is_trusted
             ? `Domínio oficial reconhecido (${typo.best_matched_domain})`
             : typo.is_typosquat
-                ? `Imita ${typo.best_matched_domain} · distância ${typo.min_levenshtein_distance} · similaridade ${typo.similarity_percentage}%`
+                ? `Semelhante a ${typo.best_matched_domain} · distância ${typo.min_levenshtein_distance} · similaridade ${typo.similarity_percentage}%`
                 : `Sem imitação de marca (maior similaridade: ${typo.similarity_percentage || 0}%)`;
         $('metric-entropy').textContent = `Domínio: ${lex.domain_entropy ?? '-'} · URL completa: ${lex.url_entropy ?? '-'}`;
         $('metric-homograph').textContent = lex.is_homograph ? lex.homograph_reason : 'Somente caracteres latinos';
